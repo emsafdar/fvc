@@ -1,0 +1,25 @@
+# Logs
+*.log
+
+# Python
+*.py[cod]
+__pycache__/
+*.so
+
+# Environments
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+media/
+media/temp/
+media/cache/
+
+# Favicon
+favicon.ico
+
+# Ignore macOS system files
+.DS_Store
