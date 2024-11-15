@@ -17,7 +17,7 @@ import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 
-# import cloudinary_storage
+import cloudinary_storage
 
 from decouple import config
 import dj_database_url
@@ -86,6 +86,7 @@ WSGI_APPLICATION = 'fvc.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+"""
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
@@ -103,7 +104,7 @@ DATABASES = {
 }
 
 
-"""
+
 
 
 # Password validation
@@ -145,13 +146,13 @@ cloudinary.config(
 )
 # CLOUDINARY_URL=cloudinary://695631565588451:pn6QTWUnM2mbpKxBViB31mfwAa8@daarxoqcz
 
-"""
+
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUD_NAME'),
     'API_KEY': config('API_KEY'),
     'API_SECRET': config('API_SECRET')
 }
-"""
+
 # Ensure media files are stored in Cloudinary
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -160,13 +161,13 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
+MEDIA_URL = ''
 
 
 # Static files (CSS, JavaScript, Images)
-"""STATICFILES_DIRS = [
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
-]"""
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
