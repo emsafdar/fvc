@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-import cloudinary
 import cloudinary_storage
 from decouple import config
 import dj_database_url
@@ -43,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cloudinary_storage',
-    'cloudinary',
     'mainapp',
 ]
 
@@ -98,16 +96,7 @@ DATABASES = {
     }
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': config('ENGINE'),
-        'NAME': config('POSTGRES_DATABASE'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('PORT'),
-    }
-}
+
 """
 
 
@@ -142,35 +131,40 @@ USE_I18N = True
 USE_TZ = True
 
 # Cloudinary settings
-"""CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('API_KEY'),
-    'API_SECRET': config('API_SECRET')
-}
+
+
 """
+CLOUDINARY_URL = "cloudinary://543438471924955:s9uVK5EdGTRBp1Ubh-WRSSQTF7Y@dpcfndno4"
+os.environ["CLOUDINARY_URL"] = CLOUDINARY_URL
+
 cloudinary.config( 
   cloud_name = "dpcfndno4", 
   api_key = "543438471924955", 
   api_secret = "s9uVK5EdGTRBp1Ubh-WRSSQTF7Y",
   secure = True
 )
+"""
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY': config('API_KEY'),
+    'API_SECRET': config('API_SECRET')
+}
+
 
 
 # Static files (CSS, JavaScript, Images)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# Media folder
-"""MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'https://res.cloudinary.com/{}/'.format(config('CLOUD_NAME'))"""
 
 # Media files (uploaded by users)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
