@@ -131,6 +131,8 @@ def save_profile(sender,instance,**kwargs):
 class Category(models.Model):
     name = models.CharField(max_length=100)
     icon = models.ImageField(default=None)
+    shortdesc = models.CharField(max_length=1000, default="Apply Now")
+    animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
