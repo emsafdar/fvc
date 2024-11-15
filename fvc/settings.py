@@ -12,15 +12,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-
-import cloudinary
-import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
-
-import cloudinary_storage
-
 from decouple import config
 import dj_database_url
+
+# import cloudinary.uploader
+# from cloudinary.utils import cloudinary_url
+import cloudinary
+import cloudinary_storage
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*', '127.0.0.1', '.vercel.app']
 
@@ -138,20 +137,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Cloudinary settings
-cloudinary.config( 
-    cloud_name = "daarxoqcz", 
-    api_key = "695631565588451", 
-    api_secret = "pn6QTWUnM2mbpKxBViB31mfwAa8",
-    secure=True,
-)
-# CLOUDINARY_URL=cloudinary://695631565588451:pn6QTWUnM2mbpKxBViB31mfwAa8@daarxoqcz
-
-
+# Cloudinary settings using CLOUDINARY_URL
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('API_KEY'),
-    'API_SECRET': config('API_SECRET')
+    'CLOUDINARY_URL': config('CLOUDINARY_URL')
 }
 
 # Ensure media files are stored in Cloudinary
@@ -159,18 +147,46 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Static files settings (unchanged)
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
-
-# Static files (CSS, JavaScript, Images)
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+
+
+# Static files (CSS, JavaScript, Images)
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configure Cloudinary
+cloudinary.config( 
+  cloud_name = config('CLOUDINARY_URL').split('@')[-1].split('/')[0], 
+  api_key = config('CLOUDINARY_URL').split(':')[1].split('//')[1].split(':')[0],
+  api_secret = config('CLOUDINARY_URL').split(':')[2].split('@')[0],
+  secure = True
+)
+
+# Logging configuration for debugging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
