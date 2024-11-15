@@ -12,7 +12,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-import cloudinary_storage
+
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+
+# import cloudinary_storage
+
 from decouple import config
 import dj_database_url
 
@@ -131,40 +137,36 @@ USE_I18N = True
 USE_TZ = True
 
 # Cloudinary settings
-
-
-"""
-CLOUDINARY_URL = "cloudinary://543438471924955:s9uVK5EdGTRBp1Ubh-WRSSQTF7Y@dpcfndno4"
-os.environ["CLOUDINARY_URL"] = CLOUDINARY_URL
-
 cloudinary.config( 
-  cloud_name = "dpcfndno4", 
-  api_key = "543438471924955", 
-  api_secret = "s9uVK5EdGTRBp1Ubh-WRSSQTF7Y",
-  secure = True
+    cloud_name = "daarxoqcz", 
+    api_key = "695631565588451", 
+    api_secret = "pn6QTWUnM2mbpKxBViB31mfwAa8",
+    secure=True,
 )
-"""
+# CLOUDINARY_URL=cloudinary://695631565588451:pn6QTWUnM2mbpKxBViB31mfwAa8@daarxoqcz
 
+"""
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUD_NAME'),
     'API_KEY': config('API_KEY'),
     'API_SECRET': config('API_SECRET')
 }
+"""
+# Ensure media files are stored in Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Static files settings (unchanged)
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 
 
 # Static files (CSS, JavaScript, Images)
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATICFILES_DIRS = [
+"""STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
-]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Media files (uploaded by users)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+]"""
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
