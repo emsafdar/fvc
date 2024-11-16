@@ -2,10 +2,26 @@ from django.shortcuts import render
 from .models import *
 from .forms import *
 
-
 def index(request):
+    sliders = Slider.objects.all()
     categories = Category.objects.all()
-    return render(request, 'index.html', {'categories': categories})
+    countries = Country.objects.filter(frontpage=True)
+    ofc = Office.objects.all()
+    reviews = Review.objects.all()
+        # Prepare star data for each review
+    for review in reviews:
+        review.filled_stars = range(review.rating)  # List of filled stars
+        review.empty_stars = range(5 - review.rating)  # List of empty stars
+        
+    return render(request, 'index.html', {'sliders': sliders,
+                                          'categories': categories,
+                                          'reviews': reviews,
+                                          'countries': countries,
+                                          'ofc': ofc,
+                                          })
+
+
+
 
 def about(request):
     return render(request, 'about.html')

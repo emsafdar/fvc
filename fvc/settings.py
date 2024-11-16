@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_countries',
     'cloudinary_storage',
     'cloudinary',
     'mainapp',
@@ -75,6 +77,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                #newly added
+                'mainapp.context_processors.site_settings',
             ],
         },
     },
