@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import *
 from .forms import *
+from django.contrib import messages
+
 
 def index(request):
     sliders = Slider.objects.all()
@@ -29,16 +31,39 @@ def about(request):
     return render(request, 'about.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    ofc = Office.objects.all()
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        project = request.POST.get('project')
+        subject = request.POST.get('subject')
+        message_text = request.POST.get('message')
+
+        # Save the message to the database
+        ContactMessage.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            project=project,
+            subject=subject,
+            message=message_text,
+        )
+
+        # Success message for the user
+        messages.success(request, "Your message has been sent successfully!")
+    
+    return render(request, 'contact.html', {'ofc': ofc})
 
 def countries(request):
-    return render(request, 'countries.html')
-
-def categories(request):
-    return render(request, 'categories.html')
+    countries = Country.objects.all()
+    return render(request, 'countries.html', {
+                                                'countries': countries,
+                                            })
 
 def service(request):
-    return render(request, 'service.html')
+    categories = Category.objects.all()
+    return render(request, 'service.html', {'categories': categories})
 
 def testimonial(request):
     return render(request, 'testimonial.html')

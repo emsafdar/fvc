@@ -31,10 +31,12 @@
                     </div>
                 {% endfor %}                    
 
-            <div class="col-12">
-                <a class="btn btn-primary border-secondary rounded-pill py-3 px-5 wow fadeInUp" data-wow-delay="0.1s" 
-                href="{% url 'mainapp:countries' %}">More Countries</a>
-            </div>
+                {% if request.path == '/' %}
+                <div class="col-12">
+                    <a class="btn btn-primary border-secondary rounded-pill py-3 px-5 wow fadeInUp" data-wow-delay="0.1s" 
+                    href="{% url 'mainapp:countries' %}">More Countries</a>
+                </div>
+                {% endif %}
         </div>
     </div>
 </div>
