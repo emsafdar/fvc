@@ -62,43 +62,6 @@ class Office(models.Model):
 
     class Meta:
         verbose_name_plural = 'Offices'
-
-
-class SiteSettings(models.Model):
-    site_title = models.CharField(max_length=200, help_text="The title of your site")
-    logo =  CloudinaryField('image', folder='about/', help_text="Upload the site logo", null=True, blank=True)
-    footer_text = models.CharField(max_length=500, blank=True, null=True, help_text="Footer text for the site")
-    phone_primary = models.CharField(max_length=200, help_text="+923021108001")
-    phone_secondary = models.CharField(max_length=200, help_text="+923017978598")
-    email = models.CharField(max_length=200, help_text="fviconsultants@gmail.com")
-
-    countries_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="Countries we offer")
-    countries_main =  models.CharField(max_length=200, blank=True, null=True, help_text="Immigration & visa services following Countries")
-    countries_desc =  models.CharField(max_length=500, blank=True, null=True, help_text="Visa Services accross the globe")
-
-    chooseus_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="why choose us")
-    chooseus_main =  models.CharField(max_length=200, blank=True, null=True, help_text="Services That Our Client Requires")
-    chooseus_desc =  models.CharField(max_length=500, blank=True, null=True, help_text="Visa Services accross the globe")
-
-    reviews_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="OUR CLIENTS REVIEWS")
-    reviewsmain =  models.CharField(max_length=200, blank=True, null=True, help_text="What Our Clients Say")
-    reviewsdesc =  models.CharField(max_length=500, blank=True, null=True, help_text="reviews desc")
-
-    training_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="CHECK OUR TRAINING")
-    trainingmain =  models.CharField(max_length=200, blank=True, null=True, help_text="Best Coacing Service")
-    trainingdesc =  models.CharField(max_length=500, blank=True, null=True, help_text="Training from Our experts")
-
-    office_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="Worlwide Offices")
-    officemain =  models.CharField(max_length=200, blank=True, null=True, help_text="Explore Our Office Worldwide")
-    officedesc =  models.CharField(max_length=500, blank=True, null=True, help_text="somewhat about our worldwide offices")
-
-    primary_color = models.CharField(max_length=7, default="#007bff")  # Example: Blue
-    secondary_color = models.CharField(max_length=7, default="#6c757d")  # Example: Gray
-    background_color = models.CharField(max_length=7, default="#ffffff")  # Example: White
-    text_color = models.CharField(max_length=7, default="#000000")  # Example: Black
-    
-    def __str__(self):
-        return self.site_title
     
 
 
@@ -143,3 +106,49 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"{self.name} - {self.subject}"
 
+class SiteSettings(models.Model):
+    site_title = models.CharField(max_length=200, help_text="The title of your site")
+    logo =  CloudinaryField('image', folder='about/', help_text="Upload the site logo", null=True, blank=True)
+    footer_text = models.CharField(max_length=500, blank=True, null=True, help_text="Footer text for the site")
+    phone_primary = models.CharField(max_length=200, help_text="+923021108001")
+    phone_secondary = models.CharField(max_length=200, help_text="+923017978598")
+    email = models.CharField(max_length=200, help_text="fviconsultants@gmail.com")
+
+    countries_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="Countries we offer")
+    countries_main =  models.CharField(max_length=200, blank=True, null=True, help_text="Immigration & visa services following Countries")
+    countries_desc =  models.CharField(max_length=500, blank=True, null=True, help_text="Visa Services accross the globe")
+
+    chooseus_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="why choose us")
+    chooseus_main =  models.CharField(max_length=200, blank=True, null=True, help_text="Services That Our Client Requires")
+    chooseus_desc =  models.CharField(max_length=500, blank=True, null=True, help_text="Visa Services accross the globe")
+
+    reviews_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="OUR CLIENTS REVIEWS")
+    reviewsmain =  models.CharField(max_length=200, blank=True, null=True, help_text="What Our Clients Say")
+    reviewsdesc =  models.CharField(max_length=500, blank=True, null=True, help_text="reviews desc")
+
+    training_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="CHECK OUR TRAINING")
+    trainingmain =  models.CharField(max_length=200, blank=True, null=True, help_text="Best Coacing Service")
+    trainingdesc =  models.CharField(max_length=500, blank=True, null=True, help_text="Training from Our experts")
+
+    office_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="Worlwide Offices")
+    officemain =  models.CharField(max_length=200, blank=True, null=True, help_text="Explore Our Office Worldwide")
+    officedesc =  models.CharField(max_length=500, blank=True, null=True, help_text="somewhat about our worldwide offices")
+
+    querystarter =  models.CharField(max_length=200, blank=True, null=True, help_text="Quick Contact")
+    querymain =  models.CharField(max_length=200, blank=True, null=True, help_text="Have Questions? Don't Hesitate to Contact Us")
+    querydesc =  models.CharField(max_length=200, blank=True, null=True, help_text="We are here to help you!")
+    address =  models.CharField(max_length=200, blank=True, null=True, help_text="Office Address")
+    facebook =  models.CharField(max_length=200, blank=True, null=True, help_text="http://fb.com/fviconsultants")
+    tiktok =  models.CharField(max_length=200, blank=True, null=True, help_text="http://tiktok.com/fviconsultants")
+    linkedin =  models.CharField(max_length=200, blank=True, null=True, help_text="http://linkedin.com/fviconsultants")
+    formstarter =  models.CharField(max_length=200, blank=True, null=True, help_text="Lets Connect")
+    formheading =  models.CharField(max_length=200, blank=True, null=True, help_text="Send Your Message")
+    mapembedcode =  models.CharField(max_length=200, blank=True, null=True, help_text="paste embed code here")
+
+    primary_color = models.CharField(max_length=7, default="#007bff")  # Example: Blue
+    secondary_color = models.CharField(max_length=7, default="#6c757d")  # Example: Gray
+    background_color = models.CharField(max_length=7, default="#ffffff")  # Example: White
+    text_color = models.CharField(max_length=7, default="#000000")  # Example: Black
+    
+    def __str__(self):
+        return self.site_title
