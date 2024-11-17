@@ -4,6 +4,7 @@ from .forms import *
 
 def index(request):
     sliders = Slider.objects.all()
+    features = Feature.objects.all()
     categories = Category.objects.all()
     countries = Country.objects.filter(frontpage=True)
     ofc = Office.objects.all()
@@ -14,6 +15,7 @@ def index(request):
         review.empty_stars = range(5 - review.rating)  # List of empty stars
         
     return render(request, 'index.html', {'sliders': sliders,
+                                          'features': features,
                                           'categories': categories,
                                           'reviews': reviews,
                                           'countries': countries,

@@ -8,7 +8,35 @@ def site_settings(request):
                 'site_title': settings.site_title,
                 'logo': settings.logo.url if settings.logo else None,
                 'footer_text': settings.footer_text,
-                'contact_desc': settings.contact_desc,
+
+                'phone_primary': settings.phone_primary,
+                'phone_secondary': settings.phone_secondary,
+                'email': settings.email,
+
+                'office_starter': settings.office_starter,
+                'officemain': settings.officemain,
+                'officedesc': settings.officedesc,
+
+                'countries_starter': settings.countries_starter,
+                'countries_main': settings.countries_main,
+                'countries_desc': settings.countries_desc,
+
+                'chooseus_starter': settings.chooseus_starter,
+                'chooseus_main': settings.chooseus_main,
+                'chooseus_desc': settings.chooseus_main,
+
+                'reviews_starter':  settings.reviews_starter,
+                'reviewsmain':  settings.reviewsmain,
+                'reviewsdesc':  settings.reviewsdesc,
+            
+                'training_starter':  settings.training_starter,
+                'trainingmain':  settings.trainingmain,
+                'trainingdesc':  settings.trainingdesc,
+
+                'primary_color': settings.primary_color,
+                'secondary_color': settings.secondary_color,
+                'background_color': settings.background_color,
+                'text_color': settings.text_color,
             }
         else:
             # Return default settings if no SiteSettings exists
@@ -16,13 +44,69 @@ def site_settings(request):
                 'site_title': 'Default Site Title',
                 'logo': None,
                 'footer_text': 'Default footer text',
-                'contact_desc': 'Default contact desc',
+
+                'phone_primary': "+923021108001",
+                'phone_secondary': "+923017978598",
+                'email': "fviconsultants@gmail.com",
+
+                'office_starter': "Worlwide Offices",
+                'officemain': "Explore Our Office Worldwide",
+                'officedesc': "Visa Services accross the globe",
+
+                'countries_starter': "Countries we offer",
+                'countries_main': "Immigration & visa services following Countries",
+                'countries_desc': "Visa Services accross the globe",
+
+                'chooseus_starter': "why choose us",
+                'chooseus_main': "Services That Our Client Requires",
+                'chooseus_desc': "Visa Services accross the globe",
+
+                'reviews_starter':  "OUR CLIENTS REVIEWS",
+                'reviewsmain':  "What Our Clients Say",
+                'reviewsdesc':  "reviews desc",
+            
+                'training_starter':  "CHECK OUR TRAINING",
+                'trainingmain':  "Best Coacing Service",
+                'trainingdesc':  "Training from Our experts",
+
+                'primary_color': 'Default primary color',
+                'secondary_color': 'Default secondary_color',
+                'background_color': 'Default background_color',
+                'text_color': 'Default text_color',
             }
     except SiteSettings.DoesNotExist:
         return {
             'site_title': 'Default Site Title',
             'logo': None,
             'footer_text': 'Default footer text',
-            'contact_desc': 'Default contact desc',
+
+            'phone_primary': "+923021108001",
+            'phone_secondary': "+923017978598",
+            'email': "fviconsultants@gmail.com",
+
+            'office_starter': "Worlwide Offices",
+            'officemain': "Explore Our Office Worldwide",
+            'officedesc': "Visa Services accross the globe",
+
+            'countries_starter': "Countries we offer",
+            'countries_main': "Immigration & visa services following Countries",
+            'countries_desc': "Visa Services accross the globe",
+
+            'chooseus_starter': "why choose us",
+            'chooseus_main': "Services That Our Client Requires",
+            'chooseus_desc': "Visa Services accross the globe",
+
+            'reviews_starter':  "OUR CLIENTS REVIEWS",
+            'reviewsmain':  "What Our Clients Say",
+            'reviewsdesc':  "reviews desc",
+            
+            'training_starter':  "CHECK OUR TRAINING",
+            'trainingmain':  "Best Coacing Service",
+            'trainingdesc':  "Training from Our experts",
+
+            'primary_color': 'Default primary color',
+            'secondary_color': 'Default secondary_color',
+            'background_color': 'Default background_color',
+            'text_color': 'Default text_color',
         }
 

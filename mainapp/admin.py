@@ -32,5 +32,7 @@ class MyModelAdmin(admin.ModelAdmin):
         return obj.country.code  # Displays the country code (e.g., "CA")
     get_country_code.short_description = 'Country Code'
 
+admin.site.register(Feature)
+admin.site.register(Training)
 admin.site.register(Slider)
 admin.site.register(Category)

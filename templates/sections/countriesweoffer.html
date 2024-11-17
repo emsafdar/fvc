@@ -1,0 +1,41 @@
+{% load static %}
+
+<!-- Countries We Offer Start -->
+<div class="container-fluid country overflow-hidden py-5">
+    <div class="container">
+        <div class="section-title text-center wow fadeInUp" data-wow-delay="0.1s" style="margin-bottom: 70px;">
+            <div class="sub-style">
+                <h5 class="sub-title text-primary px-3">{{countries_starter}}</h5>
+            </div>
+            <h1 class="display-5 mb-4">{{countries_main}}</h1>
+            <p class="mb-0">{{countries_desc}}</p>
+        </div>
+        <div class="row g-4 text-center">
+
+                {% for country in countries %}
+                    <div class="col-lg-6 col-xl-3 mb-5 mb-xl-0 wow fadeInUp" data-wow-delay="0.{{ country.animation_delay }}s">
+                        <div class="country-item">
+                            <div class="rounded overflow-hidden">
+                                <!-- Display the famous image -->
+                                <img src="{{ country.famousimage.url }}" class="img-fluid w-100 rounded" alt="{{ country.country.name }}">
+                            </div>
+                            <div class="country-flag">
+                                <!-- Display the flag using the country_flag_url filter -->
+                                <img src="{{country.country.flag}}" class="img-fluid rounded-circle" alt="{{ country.country.name }}">
+                            </div>
+                            
+                            <div class="country-name">
+                                <a href="{% url 'mainapp:countries' %}" class="text-white fs-4">{{ country.country.name }}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}                    
+
+            <div class="col-12">
+                <a class="btn btn-primary border-secondary rounded-pill py-3 px-5 wow fadeInUp" data-wow-delay="0.1s" 
+                href="{% url 'mainapp:countries' %}">More Countries</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Countries We Offer End -->
