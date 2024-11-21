@@ -36,7 +36,7 @@ class Review(models.Model):
 
 
 class Country(models.Model):
-    country = CountryField()
+    country = CountryField(unique=True)
     famousimage = CloudinaryField('image', folder='FamousPlaces/', null=True, blank=True)
     animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
