@@ -6,7 +6,7 @@ from django_countries.fields import CountryField
 class Category(models.Model):
     name = models.CharField(max_length=100)
     image = CloudinaryField('image', folder='category_images')
-    shortdesc = models.CharField(max_length=1000, default="Apply Now")
+    shortdesc = models.TextField(default="Apply Now")
     animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
 
