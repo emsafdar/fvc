@@ -23,7 +23,7 @@ def site_settings(request):
 
                 'chooseus_starter': settings.chooseus_starter,
                 'chooseus_main': settings.chooseus_main,
-                'chooseus_desc': settings.chooseus_main,
+                'chooseus_desc': settings.chooseus_desc,
 
                 'reviews_starter':  settings.reviews_starter,
                 'reviewsmain':  settings.reviewsmain,
