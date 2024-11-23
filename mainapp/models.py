@@ -97,6 +97,7 @@ class Feature(models.Model):
     desc = models.TextField(null=True, blank=True, help_text="Details of the feature")
     faicon = models.CharField(max_length=50, null=True, blank=True)
     animationdelay = models.CharField(max_length=1, null=True, blank=True)
+    frontpage = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -54,13 +54,19 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
-    list_display = ('countryname', 'phone', 'email')
+    list_display = ('countryname', 'phone', 'email', 'location', 'animation_delay')
+
+    # Add editable fields in the list view
+    list_editable = ('phone', 'email', 'location', 'animation_delay',)
 
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('get_country_name', 'get_country_code', 'slug', 'frontpage', 'animation_delay')
     prepopulated_fields = {'slug': ('country',)}
+
+    # Add editable fields in the list view
+    list_editable = ('frontpage', 'animation_delay',)
 
     def get_country_name(self, obj):
         return obj.country.name  # Displays the full country name (e.g., "Canada")
@@ -75,14 +81,30 @@ class CountryAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'animation_delay')
     prepopulated_fields = {'slug': ('name',)}
+    # Add editable fields in the list view
+    list_editable = ('slug', 'animation_delay',)
 
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'subject', 'created_at')
-    list_filter = ('created_at',)
+    list_display = ('name', 'email', 'subject', 'is_read', 'project',)
+    list_filter = ('is_read', 'created_at', 'project')
     search_fields = ('name', 'email', 'subject')
+    # Add editable fields in the list view
+    list_editable = ('is_read', 'project',)
 
-admin.site.register(Feature)
+
+@admin.register(Feature)
+class FeatureAdmin(admin.ModelAdmin):
+    list_display = ('title', 'tagline', 'faicon', 'frontpage', 'animationdelay',)
+    search_fields = ('title',)
+    # Add editable fields in the list view
+    list_editable = ('tagline', 'faicon', 'frontpage', 'animationdelay',)
+
+
 admin.site.register(Training)
+
+
 admin.site.register(Slider)
+
+

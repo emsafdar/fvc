@@ -3,7 +3,7 @@ from .models import *
 from .forms import *
 from django.contrib import messages
 from django.db.models import Q
-from django_countries import countries
+from django_countries.data import COUNTRIES
 
 def index(request):
     sliders = Slider.objects.all()
@@ -84,21 +84,21 @@ def filter_by_category(request, category_slug):
     return render(request, 'all_visas.html', context)
 
 def search_visas(request):
-    query = request.GET.get('q', '')  # Get the search query from the request
+    query = request.GET.get('q', '').strip()  # Get the search query and clean it
     results = []
 
     if query:
-        # Match country name against the search query
+        # COUNTRIES is a dictionary-like object
         matching_country_codes = [
-            code for code, name in countries if query.lower() in name.lower()
+            code for code, name in COUNTRIES.items() if query.lower() in name.lower()
         ]
 
-        # Perform search on title, description, category, and country
+        # Perform search on Visa model
         results = Visa.objects.filter(
             Q(title__icontains=query) |
             Q(description__icontains=query) |
-            Q(category__name__icontains=query) |  # Assuming `Category` has a `name` field
-            Q(country__country__in=matching_country_codes)  # Match country codes
+            Q(category__name__icontains=query) |  # Assuming category is related properly
+            Q(country__country__in=matching_country_codes)  # Match by country codes
         ).distinct()
 
     context = {
@@ -106,7 +106,6 @@ def search_visas(request):
         'results': results,
     }
     return render(request, 'search.html', context)
-
 
 
 def about(request):
