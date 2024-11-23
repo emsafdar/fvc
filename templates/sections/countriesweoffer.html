@@ -23,7 +23,7 @@
                             <img src="{{country.country.flag}}" class="img-fluid rounded-circle" alt="{{ country.country.name }}">
                         </div>
                         <div class="country-name">
-                            <a href="{% url 'mainapp:countries' %}" class="text-white fs-4">{{ country.country.name }}</a>
+                            <a href="{% url 'mainapp:filter_by_country' country.slug %}" class="text-white fs-4">{{ country.country.name }}</a>
                         </div>
                     </div>
                 </div>

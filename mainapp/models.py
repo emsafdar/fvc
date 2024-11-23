@@ -2,13 +2,21 @@ from django.db import models
 from cloudinary.models import CloudinaryField
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
+from django.utils.text import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
     image = CloudinaryField('image', folder='category_images')
     shortdesc = models.TextField(default="Apply Now")
     animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.name
@@ -18,29 +26,18 @@ class Category(models.Model):
         ordering = ('-created',)
 
 
-class Review(models.Model):
-    name = models.CharField(max_length=100)
-    designation = models.CharField(max_length=100)
-    photo = CloudinaryField('image', folder='testimonial_images')
-    review_msg = models.CharField(max_length=1000, default="Apply Now")
-    rating = models.IntegerField(default=0)
-    animation_delay = models.PositiveIntegerField(default=1)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = 'reviews'
-        ordering = ('-created',)
-
-
 class Country(models.Model):
     country = CountryField(unique=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
     famousimage = CloudinaryField('image', folder='FamousPlaces/', null=True, blank=True)
     animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
     frontpage = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.country.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.country.name
@@ -48,6 +45,26 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = 'countries'
         ordering = ('-created',)
+
+class Visa(models.Model):
+    title = models.CharField(max_length=500, default='Visa')
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    application_process = models.TextField(blank=True, null=True)
+    requirements = models.TextField(blank=True, null=True)
+    processing_time = models.CharField(max_length=100, blank=True, null=True)
+    fees = models.CharField(max_length=10, default='Ask Us', blank=True, null=True)
+    document_upload = CloudinaryField('image', folder='visa/', null=True, blank=True)
+    duration = models.CharField(max_length=100, blank=True, null=True)
+    deadline = models.CharField(max_length=255, blank=True, null=True)
+    appointment = models.CharField(max_length=50, choices=[('Available', 'Available'), ('Foreign', 'Foreign'), ('Paid', 'Paid')], default='Available')
+    eligibility_criteria = models.TextField(blank=True, null=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
 
 class Office(models.Model):
     officeimg = CloudinaryField('image', folder='about/', null=True, blank=True)
@@ -95,16 +112,50 @@ class Training(models.Model):
         return self.title
 
 class ContactMessage(models.Model):
+    # Choices for the project field
+    PROJECT_CHOICES = [
+        ('visa', 'Visa Inquiry'),
+        ('appointment', 'Appointment Request'),
+        ('feedback', 'Feedback'),
+        ('review', 'Review'),
+        ('complaint', 'Complaint'),
+        ('other', 'Other'),  # For messages that don't fit the above categories
+    ]
+
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=15, blank=True, null=True)
-    project = models.CharField(max_length=255, blank=True, null=True)
+    project = models.CharField(
+        max_length=50,
+        choices=PROJECT_CHOICES,
+        default='other',  # Default value to ensure database integrity
+    )
     subject = models.CharField(max_length=255)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)  # Tracks if the message has been read
 
     def __str__(self):
         return f"{self.name} - {self.subject}"
+
+
+
+class Review(models.Model):
+    name = models.CharField(max_length=100)
+    designation = models.CharField(max_length=100)
+    photo = CloudinaryField('image', folder='testimonial_images')
+    review_msg = models.CharField(max_length=1000, default="Apply Now")
+    rating = models.IntegerField(default=0)
+    animation_delay = models.PositiveIntegerField(default=1)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'reviews'
+        ordering = ('-created',)
+
 
 class SiteSettings(models.Model):
     site_title = models.CharField(max_length=200, help_text="The title of your site")

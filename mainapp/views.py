@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 from .forms import *
 from django.contrib import messages
-
+from django.db.models import Q
+from django_countries import countries
 
 def index(request):
     sliders = Slider.objects.all()
@@ -24,6 +25,87 @@ def index(request):
                                           'ofc': ofc,
                                           })
 
+
+def all_visas(request):
+    visas = Visa.objects.all()  # Show all visas by default
+    countries = Country.objects.all()
+    categories = Category.objects.all()
+
+    # Filter by country if 'country' parameter is passed in the URL
+    country_slug = request.GET.get('country')
+    if country_slug:
+        country = get_object_or_404(Country, slug=country_slug)
+        visas = visas.filter(country=country)
+
+    # Filter by category if 'category' parameter is passed in the URL
+    category_slug = request.GET.get('category')
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+        visas = visas.filter(category=category)
+
+    context = {
+        'visas': visas,
+        'countries': countries,
+        'categories': categories,
+    }
+    
+    return render(request, 'all_visas.html', context)
+
+# View to filter visas by country using slug
+def filter_by_country(request, country_slug):
+    # Get the country object based on slug
+    country = get_object_or_404(Country, slug=country_slug)
+    visas = Visa.objects.filter(country=country)
+    countries = Country.objects.all()
+    categories = Category.objects.all()
+    
+    context = {
+        'visas': visas,
+        'countries': countries,
+        'categories': categories,
+        'selected_country': country,
+    }
+    return render(request, 'all_visas.html', context)
+
+# View to filter visas by category using slug
+def filter_by_category(request, category_slug):
+    # Get the category object based on slug
+    category = get_object_or_404(Category, slug=category_slug)
+    visas = Visa.objects.filter(category=category)
+    countries = Country.objects.all()
+    categories = Category.objects.all()
+    
+    context = {
+        'visas': visas,
+        'countries': countries,
+        'categories': categories,
+        'selected_category': category,
+    }
+    return render(request, 'all_visas.html', context)
+
+def search_visas(request):
+    query = request.GET.get('q', '')  # Get the search query from the request
+    results = []
+
+    if query:
+        # Match country name against the search query
+        matching_country_codes = [
+            code for code, name in countries if query.lower() in name.lower()
+        ]
+
+        # Perform search on title, description, category, and country
+        results = Visa.objects.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query) |  # Assuming `Category` has a `name` field
+            Q(country__country__in=matching_country_codes)  # Match country codes
+        ).distinct()
+
+    context = {
+        'query': query,
+        'results': results,
+    }
+    return render(request, 'search.html', context)
 
 
 

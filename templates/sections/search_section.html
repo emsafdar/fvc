@@ -1,0 +1,28 @@
+{% load static %}
+
+<div class="container mt-5">
+    <h2>Search Results for "{{ query }}"</h2>
+    <p>Found {{ results.count }} result(s).</p>
+    
+    {% if results %}
+        <div class="row">
+            {% for visa in results %}
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ visa.title }}</h5>
+                            <p class="card-text">
+                                <strong>Country:</strong> {{ visa.country.name }}<br>
+                                <strong>Category:</strong> {{ visa.category.name }}<br>
+                                {{ visa.description|truncatewords:20 }}
+                            </p>
+                            <a href="#" class="btn btn-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No results found. Please try a different keyword.</p>
+    {% endif %}
+</div>

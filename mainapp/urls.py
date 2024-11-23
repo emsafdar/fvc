@@ -6,6 +6,12 @@ app_name = "mainapp"
 urlpatterns = [
     path('', views.index, name='index'),
 
+    path('all-visas/', views.all_visas, name='all_visas'),
+    path('all-visas/country/<slug:country_slug>/', views.filter_by_country, name='filter_by_country'),
+    path('all-visas/category/<slug:category_slug>/', views.filter_by_category, name='filter_by_category'),
+    
+    path('search/', views.search_visas, name='search_visas'),
+
     path('about', views.about, name='about'),
     path('contact', views.contact, name='contact'),
     path('countries', views.countries, name='countries'),

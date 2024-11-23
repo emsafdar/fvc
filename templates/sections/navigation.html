@@ -101,6 +101,9 @@
                         <a href="{% url 'mainapp:countries' %}"
                            class="nav-item nav-link {% if request.path == '/countries' %}active{% endif %}">Countries</a>
 
+                        <a href="{% url 'mainapp:all_visas' %}"
+                           class="nav-item nav-link {% if request.path == '/all_visas' %}active{% endif %}">Visas</a>
+
 
                         <a href="{% url 'mainapp:contact' %}"
                            class="nav-item nav-link {% if request.path == '/contact' %}active{% endif %}">Contact</a>
