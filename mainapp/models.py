@@ -6,7 +6,7 @@ from django.utils.text import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True, db_index=True)
     image = CloudinaryField('image', folder='category_images')
     shortdesc = models.TextField(default="Apply Now")
     animation_delay = models.PositiveIntegerField(default=1)
@@ -28,7 +28,7 @@ class Category(models.Model):
 
 class Country(models.Model):
     country = CountryField(unique=True)
-    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True)
+    slug = models.SlugField(max_length=50, unique=True, blank=True, null=True, db_index=True)
     famousimage = CloudinaryField('image', folder='FamousPlaces/', null=True, blank=True)
     animation_delay = models.PositiveIntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
@@ -62,6 +62,7 @@ class Visa(models.Model):
     eligibility_criteria = models.TextField(blank=True, null=True)
     animation_delay = models.CharField(max_length=1, default='1', null=True, blank=True)
     active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

@@ -4,6 +4,7 @@ from .forms import *
 from django.contrib import messages
 from django.db.models import Q
 from django_countries.data import COUNTRIES
+from django.http import HttpResponse
 
 def index(request):
     sliders = Slider.objects.all()
@@ -204,3 +205,12 @@ def unsubscribe_newsletter(request):
     return redirect('mainapp:index')  # Adjust redirect to the appropriate page
 
 
+
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Allow: /",
+        "Sitemap: https://www.fviconsultants.com/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
