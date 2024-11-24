@@ -13,7 +13,7 @@ class CategorySitemap(Sitemap):
         return obj.created
 
     def location(self, obj):
-        reverse('mainapp:filter_by_category', kwargs={'category_slug': obj.slug})
+        return reverse('mainapp:filter_by_category', kwargs={'category_slug': obj.slug})
     
 class CountrySitemap(Sitemap):
     changefreq = "weekly"
