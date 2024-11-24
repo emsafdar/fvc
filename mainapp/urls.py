@@ -25,6 +25,7 @@ urlpatterns = [
     path('terms', views.terms, name='terms'),
 
     path('404', views.resource_not_found, name='resource_not_found'),
+    path('subscribe-newsletter/', views.subscribe_newsletter, name='subscribe_newsletter'),
 
 
 ]

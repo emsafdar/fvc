@@ -60,6 +60,7 @@ class Visa(models.Model):
     deadline = models.CharField(max_length=255, blank=True, null=True)
     appointment = models.CharField(max_length=50, choices=[('Available', 'Available'), ('Foreign', 'Foreign'), ('Paid', 'Paid')], default='Available')
     eligibility_criteria = models.TextField(blank=True, null=True)
+    animation_delay = models.CharField(max_length=1, default='1', null=True, blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -204,3 +205,13 @@ class SiteSettings(models.Model):
     
     def __str__(self):
         return self.site_title
+    
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+    
+    

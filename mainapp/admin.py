@@ -102,6 +102,13 @@ class FeatureAdmin(admin.ModelAdmin):
     list_editable = ('tagline', 'faicon', 'frontpage', 'animationdelay',)
 
 
+@admin.register(NewsletterSubscription)
+class NewsletterSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('email', 'subscribed_at',)
+    search_fields = ('email',)
+    list_filter = ('subscribed_at',)
+
+
 admin.site.register(Training)
 
 

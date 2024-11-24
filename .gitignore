@@ -19,7 +19,7 @@ media/temp/
 media/cache/
 
 # Favicon
-favicon.ico
+# favicon.ico
 
 # Ignore macOS system files
 .DS_Store

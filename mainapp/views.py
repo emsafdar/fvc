@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from .forms import *
 from django.contrib import messages
@@ -111,30 +111,28 @@ def search_visas(request):
 def about(request):
     return render(request, 'about.html')
 
+
 def contact(request):
-    ofc = Office.objects.all()
+    ofc = Office.objects.all()  # If unrelated, this can be removed
+    form = ContactForm()
+
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        project = request.POST.get('project')
-        subject = request.POST.get('subject')
-        message_text = request.POST.get('message')
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Save the data from the form to the database
+            ContactMessage.objects.create(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
+                project=form.cleaned_data['project'],
+                subject=form.cleaned_data['subject'],
+                message=form.cleaned_data['message'],
+            )
+            messages.success(request, "Your message has been sent successfully!")
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-        # Save the message to the database
-        ContactMessage.objects.create(
-            name=name,
-            email=email,
-            phone=phone,
-            project=project,
-            subject=subject,
-            message=message_text,
-        )
-
-        # Success message for the user
-        messages.success(request, "Your message has been sent successfully!")
-    
-    return render(request, 'contact.html', {'ofc': ofc})
+    return render(request, 'contact.html', {'form': form, 'ofc': ofc})
 
 def countries(request):
     countries = Country.objects.all()
@@ -166,3 +164,19 @@ def terms(request):
 
 def resource_not_found(request):
     return render(request, '404.html')
+
+def subscribe_newsletter(request):
+    if request.method == 'POST':
+        form = NewsletterForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            if not NewsletterSubscription.objects.filter(email=email).exists():
+                NewsletterSubscription.objects.create(email=email)
+                messages.success(request, "You have successfully subscribed to our newsletter!")
+            else:
+                messages.info(request, "You are already subscribed.")
+        else:
+            messages.error(request, "Please enter a valid email address.")
+    return redirect('home')  # Replace 'home' with the name of your homepage or current page
+
+

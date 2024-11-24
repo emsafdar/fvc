@@ -108,7 +108,14 @@
                                 </div>
                                 <div class="col-lg-12 col-xl-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" name="project" id="project" placeholder="Project">
+                                        <select class="form-control" name="project" id="project" required>
+                                            <option value="visa">Visa Inquiry</option>
+                                            <option value="appointment">Appointment Request</option>
+                                            <option value="feedback">Feedback</option>
+                                            <option value="review">Review</option>
+                                            <option value="complaint">Complaint</option>
+                                            <option value="other">Other</option>
+                                        </select>
                                         <label for="project">Service Required</label>
                                     </div>
                                 </div>
@@ -129,6 +136,7 @@
                                 </div>
                             </div>
                         </form>
+                        
                     </div>
                 </div>
 
