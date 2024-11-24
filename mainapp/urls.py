@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('404', views.resource_not_found, name='resource_not_found'),
     path('subscribe-newsletter/', views.subscribe_newsletter, name='subscribe_newsletter'),
+    path('unsubscribe-newsletter/', views.unsubscribe_newsletter, name='unsubscribe_newsletter'),
 
 
 ]

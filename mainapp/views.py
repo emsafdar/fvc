@@ -170,13 +170,37 @@ def subscribe_newsletter(request):
         form = NewsletterForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
-            if not NewsletterSubscription.objects.filter(email=email).exists():
-                NewsletterSubscription.objects.create(email=email)
+            subscription, created = NewsletterSubscription.objects.get_or_create(email=email)
+
+            if created or not subscription.is_subscribed:
+                subscription.is_subscribed = True
+                subscription.save()
                 messages.success(request, "You have successfully subscribed to our newsletter!")
             else:
-                messages.info(request, "You are already subscribed.")
+                unsubscribe_url = reverse('mainapp:unsubscribe_newsletter')
+                messages.info(request, f"You are already subscribed. <a href='{unsubscribe_url}'>Click here to unsubscribe</a>", extra_tags='safe')
         else:
             messages.error(request, "Please enter a valid email address.")
-    return redirect('home')  # Replace 'home' with the name of your homepage or current page
+    return redirect('mainapp:index')  # Adjust redirect to the appropriate page
+
+
+def unsubscribe_newsletter(request):
+    if request.method == 'POST':
+        form = NewsletterForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                subscription = NewsletterSubscription.objects.get(email=email)
+                if subscription.is_subscribed:
+                    subscription.is_subscribed = False
+                    subscription.save()
+                    messages.success(request, "You have successfully unsubscribed from our newsletter.")
+                else:
+                    messages.info(request, "You are already unsubscribed.")
+            except NewsletterSubscription.DoesNotExist:
+                messages.error(request, "This email is not subscribed.")
+        else:
+            messages.error(request, "Please enter a valid email address.")
+    return redirect('mainapp:index')  # Adjust redirect to the appropriate page
 
 

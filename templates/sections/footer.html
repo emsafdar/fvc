@@ -41,33 +41,59 @@
                             <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Online Payments</a>
                         </div>
                     </div>
+
+
                     <div class="col-md-6 col-lg-6 col-xl-3">
                         <div class="footer-item">
                             <h4 class="text-secondary mb-4">Newsletter</h4>
                             <p class="text-white mb-3">Stay updated with the latest visa news and tips by subscribing to our newsletter!</p>
-                            <form method="POST" action="{% url 'subscribe_newsletter' %}">
+                            
+                            <!-- Subscribe Form -->
+                            <form method="POST" action="{% url 'mainapp:subscribe_newsletter' %}">
                                 {% csrf_token %}
-                                <div class="position-relative mx-auto rounded-pill">
+                                <div class="position-relative mx-auto rounded-pill mb-3">
                                     <input type="email" name="email" class="form-control border-0 rounded-pill w-100 py-3 ps-4 pe-5" placeholder="Enter your email" required>
-                                    <button type="submit" class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">SignUp</button>
+                                    <button type="submit" class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">Sign Up</button>
                                 </div>
                             </form>
+                    
+                            <!-- Unsubscribe Link -->
+                            <p class="text-white mt-2">
+                                <a href="#" class="text-muted" data-bs-toggle="modal" data-bs-target="#unsubscribeModal">Unsubscribe</a>
+                            </p>
                         </div>
                     </div>
+                    
+                    <!-- Unsubscribe Modal -->
+                    <div class="modal fade" id="unsubscribeModal" tabindex="-1" aria-labelledby="unsubscribeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-secondary" id="unsubscribeModalLabel">Unsubscribe from Newsletter</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{% url 'mainapp:unsubscribe_newsletter' %}">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger w-100">Unsubscribe</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
                     
                 </div>
             </div>
         </div>
         <!-- Footer End -->
 
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    
+
+
 <!-- Copyright Start -->
 <div class="container-fluid copyright py-4">
     <div class="container">

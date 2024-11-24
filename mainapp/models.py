@@ -159,12 +159,27 @@ class Review(models.Model):
         ordering = ('-created',)
 
 
+
+
+
+
+        
+
 class SiteSettings(models.Model):
     site_title = models.CharField(max_length=200, help_text="The title of your site")
     logo =  CloudinaryField('image', folder='about/', help_text="Upload the site logo", null=True, blank=True)
+    metakeywords = models.TextField(default='visa', null=True, blank=True)
+    metadescription = models.TextField(default='visa consultant', null=True, blank=True)
+
     footer_text = models.CharField(max_length=500, blank=True, null=True, help_text="Footer text for the site")
-    phone_primary = models.CharField(max_length=200, help_text="+923021108001")
-    phone_secondary = models.CharField(max_length=200, help_text="+923017978598")
+    phone_primary = models.CharField(max_length=200, default="+923021108001")
+    phone_secondary = models.CharField(max_length=200, default="+923017978598")
+    third_phone = models.CharField(max_length=200, default="+923046578001")
+    fourth_phone = models.CharField(max_length=200, default="+923316000300")
+    fifth_phone = models.CharField(max_length=200, default="+923215258534")
+    uk_phone = models.CharField(max_length=200, default="+44 xxx")
+    us_phone = models.CharField(max_length=200, default="+1 xxxx")
+    
     email = models.CharField(max_length=200, help_text="fviconsultants@gmail.com")
 
     countries_starter =  models.CharField(max_length=200, blank=True, null=True, help_text="Countries we offer")
@@ -210,6 +225,7 @@ class SiteSettings(models.Model):
 class NewsletterSubscription(models.Model):
     email = models.EmailField(unique=True)
     subscribed_at = models.DateTimeField(auto_now_add=True)
+    is_subscribed = models.BooleanField(default=True)
 
     def __str__(self):
         return self.email

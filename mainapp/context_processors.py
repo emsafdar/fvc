@@ -7,10 +7,19 @@ def site_settings(request):
             return {
                 'site_title': settings.site_title,
                 'logo': settings.logo.url if settings.logo else None,
+                'metakeywords': settings.metakeywords,
+                'metadescription': settings.metadescription,
                 'footer_text': settings.footer_text,
+
 
                 'phone_primary': settings.phone_primary,
                 'phone_secondary': settings.phone_secondary,
+                'third_phone': settings.third_phone,
+                'fourth_phone': settings.fourth_phone,
+                'fifth_phone': settings.fifth_phone,
+                'uk_phone': settings.uk_phone,
+                'us_phone': settings.us_phone,
+
                 'email': settings.email,
 
                 'office_starter': settings.office_starter,
@@ -54,10 +63,17 @@ def site_settings(request):
             return {
                 'site_title': 'Default Site Title',
                 'logo': None,
+                'metakeywords': 'visa, consultants, work permit',
+                'metadescription': 'best visa consultant',
                 'footer_text': 'Default footer text',
 
                 'phone_primary': "+923021108001",
                 'phone_secondary': "+923017978598",
+                'third_phone': "+923046578001",
+                'fourth_phone': "+923316000300",
+                'fifth_phone': "+923215258534",
+                'uk_phone': "+44 xxx",
+                'us_phone': "+1 xxx",
                 'email': "fviconsultants@gmail.com",
 
                 'office_starter': "Worlwide Offices",
@@ -100,10 +116,19 @@ def site_settings(request):
         return {
             'site_title': 'Default Site Title',
             'logo': None,
+            'metakeywords': 'visa, consultants, work permit',
+            'metadescription': 'best visa consultant',
+
             'footer_text': 'Default footer text',
+
 
             'phone_primary': "+923021108001",
             'phone_secondary': "+923017978598",
+            'third_phone': "+923046578001",
+            'fourth_phone': "+923316000300",
+            'fifth_phone': "+923215258534",
+            'uk_phone': "+44 xxx",
+            'us_phone': "+1 xxx",
             'email': "fviconsultants@gmail.com",
 
             'office_starter': "Worlwide Offices",

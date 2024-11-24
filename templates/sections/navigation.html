@@ -8,8 +8,8 @@
         <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
         <title>{{site_title}}</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+        <meta name="description" content="{{ description }}">
+        <meta name="keywords" content="{{ keywords }}">
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,3 +121,12 @@
             </nav>
         </div>
         <!-- Navbar & Hero End -->
+
+                            <!-- Message Display -->
+                            {% if messages %}
+                            <div>
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">{{ message|safe }}</div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}

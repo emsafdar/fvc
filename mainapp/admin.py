@@ -104,9 +104,10 @@ class FeatureAdmin(admin.ModelAdmin):
 
 @admin.register(NewsletterSubscription)
 class NewsletterSubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('email', 'subscribed_at',)
+    list_display = ('email', 'subscribed_at', 'is_subscribed',)
     search_fields = ('email',)
     list_filter = ('subscribed_at',)
+    list_editable = ('is_subscribed',)
 
 
 admin.site.register(Training)
