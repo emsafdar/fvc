@@ -7,7 +7,7 @@ from django_countries.data import COUNTRIES
 from django.http import HttpResponse
 
 def index(request):
-    sliders = Slider.objects.all()
+    sliders = Slider.objects.filter(active=True)
     features = Feature.objects.all()
     categories = Category.objects.all()
     countries = Country.objects.filter(frontpage=True)

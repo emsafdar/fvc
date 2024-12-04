@@ -85,10 +85,13 @@ class Office(models.Model):
 
 
 class Slider(models.Model):
-    title  = models.CharField(max_length=200, help_text="starting single line 200ch")
+    title  = models.CharField(max_length=200, null=True, blank=True, help_text="starting single line 200ch")
     tagline = models.CharField(null=True, blank=True, max_length=200, help_text="h1 big font 200ch")
     desc = models.CharField(null=True, blank=True, max_length=500, help_text="test under heading 500ch")
-    headerimg = CloudinaryField('image', folder='sliders')
+    headerimg = CloudinaryField('image', folder='sliders', null=True, blank=True)
+    calltoaction = models.CharField(max_length=20, null=True, blank=True, default="Visit Us")
+    actionurl = models.CharField(max_length=300, null=True, blank=True, default="{% url 'mainapp:contact' %}")
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

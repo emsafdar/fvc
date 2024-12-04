@@ -113,6 +113,13 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
 admin.site.register(Training)
 
 
-admin.site.register(Slider)
 
+@admin.register(Slider)
+class SliderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'tagline', 'calltoaction', 'actionurl', 'active',)
+    list_editable = ('title', 'tagline', 'calltoaction', 'actionurl', 'active',)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset
 
