@@ -6,7 +6,9 @@ from django.db.models import Q
 from django_countries.data import COUNTRIES
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
-
+import qrcode
+import io
+import base64
 
 
 def index(request):
