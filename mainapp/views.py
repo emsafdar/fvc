@@ -5,6 +5,9 @@ from django.contrib import messages
 from django.db.models import Q
 from django_countries.data import COUNTRIES
 from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+
+
 
 def index(request):
     sliders = Slider.objects.filter(active=True)
@@ -138,6 +141,18 @@ def contact(request):
 def countries(request):
     countries = Country.objects.all()
     return render(request, 'countries.html', {
+                                                'countries': countries,
+                                            })
+@staff_member_required
+def allcases(request):
+    countries = Country.objects.all()
+    return render(request, 'cases.html', {
+                                                'countries': countries,
+                                            })
+
+def tracking(request):
+    countries = Country.objects.all()
+    return render(request, 'tracking.html', {
                                                 'countries': countries,
                                             })
 

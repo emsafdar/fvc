@@ -1,0 +1,664 @@
+{% load static %}
+{% include 'sections/navigation.html' %}
+{% include 'sections/modalsearch.html' %}
+
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+        <h3 class="text-white display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">All Cases</h3>
+        <ol class="breadcrumb justify-content-center text-white mb-0 wow fadeInDown" data-wow-delay="0.3s">
+            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+            <li class="breadcrumb-item active text-secondary">All cases</li>
+        </ol>    
+    </div>
+</div>
+<!-- Header End -->
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+    .case-admin {
+        --brand:#0e4da4;
+        --brand-dark:#0b3e84;
+        --accent:#10b981;
+        --warn:#ef4444;
+        --info:#0ea5e9;
+        --bg:#f5f7fb;
+        --card:#ffffff;
+        --muted:#6b7280;
+    }
+    .case-admin *{box-sizing:border-box}
+    .case-admin body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:#111827}
+    .case-admin header{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:24px 16px;text-align:center}
+    .case-admin header h1{margin:0;font-size:22px;font-weight:700}
+    .case-admin .container{max-width:1050px;margin:20px auto;padding:0 14px}
+    .case-admin .card{background:var(--card);border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(20,35,90,.05);margin-bottom:18px}
+    .case-admin label{font-size:12px;font-weight:700;color:#374151}
+    .case-admin input, 
+    .case-admin select{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;outline:none}
+    .case-admin .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .case-admin .btn-primary{background:var(--brand);color:#fff}
+    .case-admin .btn-primary:hover{background:var(--brand-dark)}
+    .case-admin .muted{color:var(--muted);font-size:12px}
+    
+    /* Toast notification */
+    .toast {
+        visibility: hidden;
+        min-width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+    .toast.show {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    /* Status cell styling */
+    .status-cell {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    /* Responsive table container */
+    .table-responsive {
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    /* Icon buttons */
+    .icon-btn {
+        background: none;
+        border: none;
+        padding: 5px;
+        margin: 0 2px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    /* Pill styling for reference numbers */
+    .pill {
+        display: inline-block;
+        background: #e0f2fe;
+        color: #075985;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    /* Action buttons container */
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+    
+    /* Status dropdown */
+    .status-dropdown {
+        min-width: 180px;
+    }
+</style>
+</head>
+
+<body>
+<div class="case-admin">
+  <div class="container">
+    <!-- HOME -->
+    <section id="home" class="active">
+      <div class="card">
+        <h2 class="mb-3">Create / Update Case</h2>
+        <p class="muted mb-3" id="formModeHint">Mode: <b>New Case</b></p>
+        
+        <div class="row mb-3">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Applicant Name</label>
+            <input id="applicantName" class="form-control" placeholder="e.g., Muhammad Ali" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Contact Number</label>
+            <input id="contactNumber" class="form-control" placeholder="+92..." required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Reference Number (auto)</label>
+            <input id="refNoField" class="form-control" disabled />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Document Type</label>
+            <input id="docType" class="form-control" placeholder="e.g., Passport Renewal" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Quantity</label>
+            <input id="quantity" class="form-control" type="number" min="1" value="1" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Service</label>
+            <select id="service" class="form-select">
+              <option value="Normal">Normal (2–3 weeks)</option>
+              <option value="Urgent">Urgent (1–3 working days)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Rate Fixed with Client</label>
+            <input id="rate" class="form-control" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Advance</label>
+            <input id="advance" class="form-control" type="number" min="0" step="1" value="0" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Balance (auto)</label>
+            <input id="balance" class="form-control" disabled />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Receiving Method</label>
+            <select id="receivingMethod" class="form-select">
+              <option value="Courier Received">Courier Received</option>
+              <option value="Physically Received">Physically Received</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Receiver Name (if physical)</label>
+            <input id="receiverName" class="form-control" placeholder="Person who handed over docs" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Date (auto)</label>
+            <input id="dateField" class="form-control" disabled />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Applicant Address</label>
+            <input id="address" class="form-control" placeholder="Street, City" />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Reference Person / Agent</label>
+            <input id="agent" class="form-control" placeholder="Agent / Ref Name" />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Payment Received By</label>
+            <input id="paymentBy" class="form-control" placeholder="Cashier name or method" />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Initial Status (auto)</label>
+            <input id="initialStatus" class="form-control" disabled />
+          </div>
+        </div>
+
+        <div class="actions mt-4">
+          <button class="btn btn-primary me-2" id="saveBtn">Save Case</button>
+          <button class="btn btn-outline-secondary" id="cancelEditBtn" style="display:none">Cancel Edit</button>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+          <h2 class="mb-2 mb-md-0">Saved Cases</h2>
+          <span class="muted">Tip: change Status and press <b>Save</b> in the row.</span>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Ref #</th>
+                <th scope="col">Applicant</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Document</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="casesBody">
+              <tr>
+                <td><span class="pill">8397685938</span></td>
+                <td>ansar</td>
+                <td>+923158027220</td>
+                <td>pcc</td>
+                <td>1</td>
+                <td class="status-cell">
+                  <select class="form-select form-select-sm status-dropdown">
+                    <option>Courier Received</option>
+                    <option selected>Physically Received</option>
+                    <option>Submitted for processing</option>
+                    <option>Additional Details Required</option>
+                    <option>Processing Completed</option>
+                    <option>Payment Pending</option>
+                    <option>Ready for dispatch</option>
+                    <option>Courier Dispatched</option>
+                    <option>Physically Received by applicant</option>
+                  </select>
+                  <button class="btn btn-sm btn-success">Save</button>
+                </td>
+                <td>9/5/2025</td>
+                <td class="text-end">
+                  <div class="action-buttons">
+                    <button class="icon-btn" title="Print">🖨️</button>
+                    <button class="icon-btn" title="Edit">✏️</button>
+                    <button class="icon-btn" title="Delete">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ---------- Persistence ----------
+    let cases = JSON.parse(localStorage.getItem("cases") || "[]");
+    // Store all used references to ensure global non-repeating numbers
+    let usedRefs = new Set(JSON.parse(localStorage.getItem("usedRefs") || "[]"));
+
+    // ---------- UI Helpers ----------
+    const $ = (id) => document.getElementById(id);
+    function showToast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=> t.classList.remove("show"), 1600);
+    }
+    function showSection(id){
+      document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+    function computeExpectedDelivery(service){
+      return service === "Urgent" ? "1–3 working days" : "2–3 weeks";
+    }
+    function computeInitialStatus(method, receiverName){
+      return method === "Courier Received" ? "Courier Received" :
+             receiverName?.trim() ? `Physically Received by ${receiverName.trim()}` : "Physically Received";
+    }
+    function formatDate(d = new Date()){
+      return d.toLocaleDateString();
+    }
+    function calcBalance(){
+      const rate = parseFloat($("rate").value) || 0;
+      const adv = parseFloat($("advance").value) || 0;
+      $("balance").value = (rate - adv).toString();
+    }
+    $("rate").addEventListener("input", calcBalance);
+    $("advance").addEventListener("input", calcBalance);
+    $("receivingMethod").addEventListener("change", ()=>{
+      $("initialStatus").value = computeInitialStatus($("receivingMethod").value, $("receiverName").value);
+    });
+    $("receiverName").addEventListener("input", ()=>{
+      $("initialStatus").value = computeInitialStatus($("receivingMethod").value, $("receiverName").value);
+    });
+
+    // ---------- Reference Generator (10-digit unique, non-repeating) ----------
+    function generateUniqueRef(){
+      // Make sure currently stored refs are included
+      cases.forEach(c=> usedRefs.add(c.refNo));
+      let ref;
+      do {
+        // 10-digit number: 1000000000..9999999999
+        ref = String(Math.floor(1000000000 + Math.random()*9000000000));
+      } while (usedRefs.has(ref));
+      usedRefs.add(ref);
+      localStorage.setItem("usedRefs", JSON.stringify(Array.from(usedRefs)));
+      return ref;
+    }
+
+    // ---------- Form state (Create / Edit) ----------
+    let editIndex = null; // null => New Case; number => editing row
+
+    function setFormMode(mode){
+      if(mode === "edit"){
+        $("formModeHint").innerHTML = 'Mode: <b style="color:#b45309">Editing Existing Case</b>';
+        $("saveBtn").textContent = "Update Case";
+        $("cancelEditBtn").style.display = "inline-block";
+      }else{
+        $("formModeHint").innerHTML = 'Mode: <b>New Case</b>';
+        $("saveBtn").textContent = "Save Case";
+        $("cancelEditBtn").style.display = "none";
+      }
+    }
+
+    function resetForm(){
+      $("applicantName").value = "";
+      $("contactNumber").value = "";
+      $("docType").value = "";
+      $("quantity").value = 1;
+      $("service").value = "Normal";
+      $("rate").value = 0;
+      $("advance").value = 0;
+      $("balance").value = "0";
+      $("receivingMethod").value = "Courier Received";
+      $("receiverName").value = "";
+      $("address").value = "";
+      $("agent").value = "";
+      $("paymentBy").value = "";
+      $("dateField").value = formatDate();
+      $("refNoField").value = generateUniqueRef();
+      $("initialStatus").value = computeInitialStatus($("receivingMethod").value, $("receiverName").value);
+      editIndex = null;
+      setFormMode("new");
+    }
+
+    $("cancelEditBtn").addEventListener("click", resetForm);
+
+    // ---------- Save / Update Case ----------
+    $("saveBtn").addEventListener("click", (e)=>{
+      e.preventDefault();
+      const refNo = $("refNoField").value;
+      const applicantName = $("applicantName").value.trim();
+      const contact = $("contactNumber").value.trim();
+      const docType = $("docType").value.trim();
+      const qty = parseInt($("quantity").value || "1",10);
+      const rate = parseFloat($("rate").value || "0");
+      const advance = parseFloat($("advance").value || "0");
+      const balance = rate - advance;
+      const service = $("service").value;
+      const receivingMethod = $("receivingMethod").value;
+      const receiverName = $("receiverName").value.trim();
+      const statusInit = computeInitialStatus(receivingMethod, receiverName);
+      const expectedDelivery = computeExpectedDelivery(service);
+      const address = $("address").value.trim();
+      const agent = $("agent").value.trim();
+      const paymentBy = $("paymentBy").value.trim();
+      const dateStr = $("dateField").value || formatDate();
+
+      if(!applicantName || !contact || !docType){
+        showToast("Please fill Applicant, Contact, and Document Type.");
+        return;
+      }
+
+      const payload = {
+        refNo,
+        applicantName, contact,
+        docType, qty,
+        rate, advance, balance,
+        service, expectedDelivery,
+        receivingMethod, receiverName,
+        address, agent, paymentBy,
+        date: dateStr,
+        // status: if editing, keep existing; else initial
+        status: editIndex===null ? statusInit : cases[editIndex].status
+      };
+
+      if(editIndex===null){
+        // NEW
+        cases.push(payload);
+        showToast("Case saved.");
+      }else{
+        // UPDATE existing (no deletion)
+        cases[editIndex] = {...cases[editIndex], ...payload};
+        showToast("Case updated.");
+      }
+      persist();
+      renderCases();
+      resetForm();
+    });
+
+    // ---------- Table Rendering ----------
+    function renderCases(){
+      const tbody = $("casesBody");
+      tbody.innerHTML = "";
+      cases.forEach((c, i)=>{
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><span class="pill">${c.refNo}</span></td>
+          <td>${c.applicantName}</td>
+          <td>${c.contact}</td>
+          <td>${c.docType}</td>
+          <td>${c.qty}</td>
+          <td class="status-cell">
+            <select id="status-${i}" class="form-select form-select-sm status-dropdown">
+              <option ${c.status.startsWith("Courier Received")?"selected":""}>Courier Received</option>
+              <option ${c.status.startsWith("Physically Received")?"selected":""}>Physically Received</option>
+              <option ${c.status==="Submitted for processing"?"selected":""}>Submitted for processing</option>
+              <option ${c.status==="Additional Details Required"?"selected":""}>Additional Details Required</option>
+              <option ${c.status==="Processing Completed"?"selected":""}>Processing Completed</option>
+              <option ${c.status==="Payment Pending"?"selected":""}>Payment Pending</option>
+              <option ${c.status==="Ready for dispatch"?"selected":""}>Ready for dispatch</option>
+              <option ${c.status==="Courier Dispatched"?"selected":""}>Courier Dispatched</option>
+              <option ${c.status==="Physically Received by applicant"?"selected":""}>Physically Received by applicant</option>
+            </select>
+            <button class="btn btn-sm btn-success" onclick="saveStatus(${i})">Save</button>
+          </td>
+          <td>${c.date}</td>
+          <td class="text-end">
+            <div class="action-buttons">
+              <button class="icon-btn" title="Print" onclick="printInvoice(${i})">🖨️</button>
+              <button class="icon-btn" title="Edit" onclick="editCase(${i})">✏️</button>
+              <button class="icon-btn" title="Delete" onclick="deleteCase(${i})">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function saveStatus(i){
+      const val = $(`status-${i}`).value;
+      // Preserve "Physically Received by NAME" if already specific
+      if(val==="Physically Received" && cases[i].status.startsWith("Physically Received by ")){
+        // keep existing detailed text
+      }else{
+        cases[i].status = val;
+      }
+      persist();
+      renderCases();
+      showToast("Status saved.");
+    }
+
+    function editCase(i){
+      const c = cases[i];
+      editIndex = i;
+      setFormMode("edit");
+      $("applicantName").value = c.applicantName;
+      $("contactNumber").value = c.contact;
+      $("docType").value = c.docType;
+      $("quantity").value = c.qty;
+      $("service").value = c.service;
+      $("rate").value = c.rate;
+      $("advance").value = c.advance;
+      $("balance").value = c.balance;
+      $("receivingMethod").value = c.receivingMethod || "Courier Received";
+      $("receiverName").value = c.receiverName || "";
+      $("address").value = c.address || "";
+      $("agent").value = c.agent || "";
+      $("paymentBy").value = c.paymentBy || "";
+      $("refNoField").value = c.refNo; // keep same ref #
+      $("dateField").value = c.date;
+      $("initialStatus").value = computeInitialStatus($("receivingMethod").value, $("receiverName").value);
+      showToast("Editing case...");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function deleteCase(i){
+      if(!confirm("Delete this case permanently?")) return;
+      cases.splice(i,1);
+      // Do NOT remove ref from usedRefs to keep numbers non-repeating forever
+      persist();
+      renderCases();
+      showToast("Case deleted.");
+    }
+
+    // ---------- Tracking ----------
+    function trackCase(){
+      const ref = $("trackRef").value.trim();
+      const c = cases.find(x=> x.refNo === ref);
+      const result = $("trackResult");
+      if(!c){
+        result.innerHTML = `<p class="muted">No case found for reference <b>${ref || "-"}</b>.</p>`;
+        return;
+      }
+      result.innerHTML = `
+        <div class="grid grid-3">
+          <div class="track-line"><span class="dot"></span><div><b>Applicant:</b><br/>${c.applicantName}</div></div>
+          <div class="track-line"><span class="dot"></span><div><b>Date:</b><br/>${c.date}</div></div>
+          <div class="track-line"><span class="dot"></span><div><b>Reference #:</b><br/>${c.refNo}</div></div>
+        </div>
+        <div class="grid grid-3" style="margin-top:8px">
+          <div class="track-line"><span class="dot"></span><div><b>Document:</b><br/>${c.docType}</div></div>
+          <div class="track-line"><span class="dot"></span><div><b>Quantity:</b><br/>${c.qty}</div></div>
+          <div class="track-line"><span class="dot"></span><div><b>Service:</b><br/>${c.service}</div></div>
+        </div>
+        <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Expected Delivery:</b><br/>${c.expectedDelivery}</div></div>
+        <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Current Status:</b><br/><span class="pill">${c.status}</span></div></div>
+      `;
+    }
+
+    // ---------- Invoice (Professional print layout) ----------
+    function printInvoice(i){
+      const c = cases[i];
+      const win = window.open("", "_blank", "width=900,height=900");
+      const styles = `
+        <style>
+          @page{size:auto;margin:16mm}
+          body{font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:#111827}
+          .wrap{max-width:800px;margin:0 auto}
+          .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #0e4da4;padding-bottom:12px}
+          .brand{color:#0e4da4}
+          .brand h1{margin:0;font-size:22px}
+          .brand p{margin:3px 0 0;font-size:12px;color:#374151}
+          .inv-meta{text-align:right}
+          .inv-meta h2{margin:0;font-size:22px}
+          .inv-meta p{margin:2px 0;font-size:12px;color:#374151}
+          .billto{display:flex;justify-content:space-between;margin:16px 0 8px}
+          .billto div{font-size:14px}
+          .table{width:100%;border-collapse:collapse;margin-top:8px}
+          .table th{background:#f3f4f6;text-align:left;padding:10px;border-bottom:1px solid #e5e7eb;font-size:12px}
+          .table td{padding:10px;border-bottom:1px solid #e5e7eb;font-size:14px}
+          .right{text-align:right}
+          .totals{margin-top:12px;width:100%;border-collapse:collapse}
+          .totals td{padding:8px}
+          .totals tr td:first-child{text-align:right;color:#374151}
+          .badge{display:inline-block;background:#e0f2fe;color:#075985;border-radius:999px;padding:4px 10px;font-size:12px}
+          .footer{margin-top:18px;font-size:12px;color:#6b7280}
+          .print-btn{display:inline-block;margin-top:16px;padding:10px 14px;border:1px solid #0e4da4;color:#0e4da4;border-radius:8px;text-decoration:none}
+          @media print {.print-btn{display:none}}
+        </style>
+      `;
+      const html = `
+        <html>
+          <head><title>Invoice - ${c.refNo}</title>${styles}</head>
+          <body>
+            <div class="wrap">
+              <div class="header">
+                <div class="brand">
+                  <h1>Friends Visa & Immigration Consultants Pvt. Ltd</h1>
+                  <p>Chatha Bakhtawar Park Road, Islamabad</p>
+                </div>
+                <div class="inv-meta">
+                  <h2>INVOICE</h2>
+                  <p><b>Reference #:</b> ${c.refNo}</p>
+                  <p><b>Date:</b> ${c.date}</p>
+                </div>
+              </div>
+
+              <div class="billto">
+                <div>
+                  <b>Bill To</b><br/>
+                  ${c.applicantName}<br/>
+                  ${c.address ? c.address+"<br/>" : ""}${c.contact}
+                </div>
+                <div style="text-align:right">
+                  <b>Service Level</b><br/>
+                  <span class="badge">${c.service}</span><br/>
+                  <div style="margin-top:6px"><b>Expected Delivery:</b> ${c.expectedDelivery}</div>
+                </div>
+              </div>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th class="right">Qty</th>
+                    <th class="right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${c.docType}</td>
+                    <td class="right">${c.qty}</td>
+                    <td class="right">${c.rate}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table class="totals">
+                <tr>
+                  <td style="width:70%"><b>Subtotal (Agreed)</b></td>
+                  <td class="right">${c.rate}</td>
+                </tr>
+                <tr>
+                  <td><b>Advance</b></td>
+                  <td class="right">-${c.advance}</td>
+                </tr>
+                <tr>
+                  <td><b>Balance Due</b></td>
+                  <td class="right"><b>${c.balance}</b></td>
+                </tr>
+              </table>
+
+              <div class="footer">
+                Thank you for your business with us.
+              </div>
+
+              <a href="#" class="print-btn" onclick="window.print();return false;">Print Invoice</a>
+            </div>
+          </body>
+        </html>
+      `;
+      win.document.write(html);
+      win.document.close();
+      // Optional: auto-print after load
+      win.onload = () => win.print();
+    }
+
+    // ---------- Storage ----------
+    function persist(){
+      localStorage.setItem("cases", JSON.stringify(cases));
+      localStorage.setItem("usedRefs", JSON.stringify(Array.from(usedRefs)));
+    }
+
+    // ---------- Init ----------
+    (function init(){
+      $("dateField").value = formatDate();
+      $("refNoField").value = generateUniqueRef();
+      $("initialStatus").value = computeInitialStatus($("receivingMethod").value, $("receiverName").value);
+      calcBalance();
+      renderCases();
+      setFormMode("new");
+    })();
+  </script>
+
+</div>
+</body>
+
+{% include 'sections/footer.html' %}

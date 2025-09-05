@@ -13,11 +13,14 @@ urlpatterns = [
     path('search/', views.search_visas, name='search_visas'),
 
     path('about', views.about, name='about'),
+    path('allcases', views.allcases, name='allcases'),
+    path('track', views.tracking, name='tracking'),
     path('contact', views.contact, name='contact'),
     path('countries', views.countries, name='countries'),
     path('service', views.service, name='service'),
     path('testimonial', views.testimonial, name='testimonial'),
     path('training', views.training, name='training'),
+
 
     path('help', views.help, name='help'),
     path('support', views.support, name='support'),
