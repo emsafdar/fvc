@@ -77,6 +77,39 @@ class CountryAdmin(admin.ModelAdmin):
     get_country_code.short_description = 'Country Code'
 
 
+@admin.register(Case)
+class CaseAdmin(admin.ModelAdmin):
+    list_display = ('ref_no', 'applicant_name', 'contact_number', 'document_type', 
+                   'service', 'status', 'date_created')
+    list_filter = ('status', 'service', 'receiving_method', 'date_created')
+    search_fields = ('ref_no', 'applicant_name', 'contact_number', 'document_type')
+    readonly_fields = ('date_created', 'date_modified', 'balance', 'expected_delivery')
+    list_per_page = 20
+    
+    # Optional: Add fieldsets for better organization in the detail view
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('ref_no', 'applicant_name', 'contact_number', 'document_type', 'quantity')
+        }),
+        ('Service Details', {
+            'fields': ('service', 'expected_delivery', 'status')
+        }),
+        ('Financial Information', {
+            'fields': ('rate', 'advance', 'balance')
+        }),
+        ('Receiving Information', {
+            'fields': ('receiving_method', 'receiver_name')
+        }),
+        ('Additional Information', {
+            'fields': ('applicant_address', 'agent', 'payment_received_by')
+        }),
+        ('Timestamps', {
+            'fields': ('date_created', 'date_modified'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'animation_delay')

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - {{ case.ref_no }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .invoice { max-width: 700px; margin: auto; border: 1px solid #ddd; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .qr { text-align: right; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body onload="window.print()">
+
+<div class="invoice">
+    <div class="header">
+        <h2>Invoice</h2>
+        <p>Reference #: <strong>{{ case.ref_no }}</strong></p>
+    </div>
+
+    <div class="qr">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" width="120">
+        <p style="font-size: 12px;">Scan to Track</p>
+    </div>
+
+    <table>
+        <tr>
+            <th>Applicant</th>
+            <td>{{ case.applicant_name }}</td>
+        </tr>
+        <tr>
+            <th>Contact</th>
+            <td>{{ case.contact_number }}</td>
+        </tr>
+        <tr>
+            <th>Document</th>
+            <td>{{ case.document_type }}</td>
+        </tr>
+        <tr>
+            <th>Service</th>
+            <td>{{ case.service }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ case.status }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ case.date_created }}</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

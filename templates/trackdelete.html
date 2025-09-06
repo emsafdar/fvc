@@ -1,0 +1,123 @@
+{% load static %}
+{% include 'sections/navigation.html' %}
+{% include 'sections/modalsearch.html' %}
+
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+        <h3 class="text-white display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">Track your Application</h3>
+        <ol class="breadcrumb justify-content-center text-white mb-0 wow fadeInDown" data-wow-delay="0.3s">
+            <li class="breadcrumb-item"><a href="index.html" class="text-white">Home</a></li>
+            <li class="breadcrumb-item active text-secondary">Tracking</li>
+        </ol>    
+    </div>
+</div>
+<!-- Header End -->
+
+<div id="track-widget">
+  <style>
+    /* Scoped styles */
+    #track-widget { font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif; background:#f5f7fb; color:#111827; padding:20px 0 }
+    #track-widget .container{max-width:750px;margin:0 auto;padding:0 14px}
+    #track-widget .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(20,35,90,.05)}
+    #track-widget label{font-size:12px;font-weight:700;color:#374151}
+    #track-widget input{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px}
+    #track-widget input:focus{border-color:#dbb509;outline:none}
+    #track-widget .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;background:#a68107;color:#fff}
+    #track-widget .btn:hover{background:#000000}
+    #track-widget .grid{display:grid;gap:12px}
+    #track-widget .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:800px){#track-widget .grid-3{grid-template-columns:1fr}}
+    #track-widget .track-line{display:flex;gap:10px;align-items:center;margin:6px 0}
+    #track-widget .dot{width:10px;height:10px;border-radius:50%;background:#000000}
+    #track-widget .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#e5f3ff;color:#000000}
+    #track-widget .muted{color:#6b7280;font-size:12px}
+    #track-widget .error{color:#dc2626;font-size:14px;margin-top:8px}
+    #track-widget .loading{text-align:center;padding:20px}
+    #track-widget .spinner{border:3px solid #f3f3f3;border-top:3px solid #a68107;border-radius:50%;width:30px;height:30px;animation:spin 1s linear infinite;margin:0 auto}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  </style>
+
+  <div class="container">
+    <div class="card">
+      <h2 style="margin:0 0 8px">Track Application</h2>
+      <div class="grid grid-3">
+        <div>
+          <label>Enter Reference Number</label>
+          <input id="trackRef" placeholder="Reference Number" />
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn" onclick="trackCase()">Search</button>
+        </div>
+      </div>
+      <div id="trackResult" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <script>
+    function trackCase() {
+      const ref = document.getElementById("trackRef").value.trim();
+      const resultDiv = document.getElementById("trackResult");
+      
+      if (!ref) {
+        resultDiv.innerHTML = `<p class="error">Please enter a reference number</p>`;
+        return;
+      }
+      
+      // Show loading indicator
+      resultDiv.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p class="muted">Searching for application...</p>
+        </div>
+      `;
+      
+      // Fetch data from Django backend
+      fetch(`/track/${ref}/`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Application not found');
+          }
+          return response.json();
+        })
+        .then(caseData => {
+          // Format the data for display
+          resultDiv.innerHTML = `
+            <div class="grid grid-3">
+              <div class="track-line"><span class="dot"></span><div><b>Applicant:</b><br/>${caseData.applicant_name}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Date:</b><br/>${caseData.date}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Reference #:</b><br/>${caseData.ref_no}</div></div>
+            </div>
+            <div class="grid grid-3" style="margin-top:8px">
+              <div class="track-line"><span class="dot"></span><div><b>Document:</b><br/>${caseData.doc_type}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Quantity:</b><br/>${caseData.qty}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Service:</b><br/>${caseData.service}</div></div>
+            </div>
+            <div class="grid grid-3" style="margin-top:8px">
+              <div class="track-line"><span class="dot"></span><div><b>Rate:</b><br/>₹${caseData.rate}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Advance Paid:</b><br/>₹${caseData.advance}</div></div>
+              <div class="track-line"><span class="dot"></span><div><b>Balance:</b><br/>₹${caseData.balance}</div></div>
+            </div>
+            <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Expected Delivery:</b><br/>${caseData.expected_delivery}</div></div>
+            <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Current Status:</b><br/><span class="pill">${caseData.status}</span></div></div>
+            ${caseData.receiver_name ? `<div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Received By:</b><br/>${caseData.receiver_name}</div></div>` : ''}
+            ${caseData.address ? `<div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Address:</b><br/>${caseData.address}</div></div>` : ''}
+            ${caseData.agent ? `<div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Agent:</b><br/>${caseData.agent}</div></div>` : ''}
+          `;
+        })
+        .catch(error => {
+          resultDiv.innerHTML = `<p class="error">${error.message || 'Error fetching application details'}</p>`;
+        });
+    }
+
+    // Allow pressing Enter to submit
+    document.getElementById("trackRef").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        trackCase();
+      }
+    });
+  </script>
+</div>
+
+{% include 'sections/footer.html' %}

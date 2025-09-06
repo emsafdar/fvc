@@ -2,21 +2,11 @@
 {% include 'sections/navigation.html' %}
 {% include 'sections/modalsearch.html' %}
 
-<!-- Header Start -->
-<div class="container-fluid bg-breadcrumb">
-    <div class="container text-center py-5" style="max-width: 900px;">
-        <h3 class="text-white display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">Track your Application</h3>
-        <ol class="breadcrumb justify-content-center text-white mb-0 wow fadeInDown" data-wow-delay="0.3s">
-            <li class="breadcrumb-item"><a href="index.html" class="text-white">Home</a></li>
-            <li class="breadcrumb-item active text-secondary">Tracking</li>
-        </ol>    
-    </div>
-</div>
-<!-- Header End -->
-
-<div id="track-widget">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Application</title>
   <style>
-    /* Scoped styles */
     #track-widget { font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif; background:#f5f7fb; color:#111827; padding:20px 0 }
     #track-widget .container{max-width:750px;margin:0 auto;padding:0 14px}
     #track-widget .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(20,35,90,.05)}
@@ -32,51 +22,53 @@
     #track-widget .dot{width:10px;height:10px;border-radius:50%;background:#000000}
     #track-widget .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#e5f3ff;color:#000000}
     #track-widget .muted{color:#6b7280;font-size:12px}
+    #track-widget .error{color:#dc2626;font-size:14px;margin-top:8px}
+    .bg-breadcrumb {background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "img/bg-hero.jpg" %}') center center no-repeat; background-size: cover;}
   </style>
+</head>
+<body>
 
-  <div class="container">
-    <div class="card">
-      <h2 style="margin:0 0 8px">Track Application</h2>
-      <div class="grid grid-3">
-        <div>
-          <label>Enter Reference Number</label>
-          <input id="trackRef" placeholder="10-digit Reference #" />
-        </div>
-        <div style="display:flex;align-items:flex-end">
-          <button class="btn" onclick="trackCase()">Search</button>
-        </div>
+  <!-- Header Start -->
+  <div class="bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+      <h3 class="text-white display-3 mb-4" style="font-size: 2.5rem;">Track your Application</h3>
+      <ol class="breadcrumb justify-content-center text-white mb-0" style="display:flex;list-style:none;padding:0;">
+        <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+        <li class="breadcrumb-item active text-secondary">Tracking</li>
+      </ol>
+    </div>
+  </div>
+  <!-- Header End -->
+
+  <div id="track-widget">
+    <div class="container">
+      <div class="card">
+        <h2 style="margin:0 0 8px">Track Application</h2>
+        <form method="get" action="{% url 'mainapp:track_case' ref_no='DUMMY' %}" 
+              onsubmit="this.action=this.action.replace('DUMMY', document.getElementById('trackRef').value)">
+          <div class="grid grid-3">
+            <div>
+              <label>Enter Reference Number</label>
+              <input id="trackRef" name="ref_no" placeholder="Reference Number" required />
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button type="submit" class="btn">Search</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div id="trackResult" style="margin-top:12px"></div>
+
+      {% if searched %}
+        <div class="card" style="margin-top:20px;">
+          <h3>Tracking Result</h3>
+          <div class="track-line"><b>Reference:</b> {{ case.ref_no }}</div>
+          <div class="track-line"><b>Applicant:</b> {{ case.applicant_name }}</div>
+          <div class="track-line"><b>Status:</b> {{ case.status }}</div>
+          <div class="track-line"><b>Date:</b> {{ case.date }}</div>
+        </div>
+      {% endif %}
     </div>
   </div>
 
-  <script>
-    let cases = JSON.parse(localStorage.getItem("cases") || "[]");
-
-    function trackCase(){
-      const ref = document.getElementById("trackRef").value.trim();
-      const c = cases.find(x=> x.refNo === ref);
-      const result = document.getElementById("trackResult");
-      if(!c){
-        result.innerHTML = `<p class="muted">No case found for reference <b>${ref || "-"}</b>.</p>`;
-        return;
-      }
-      result.innerHTML = `
-        <div class="grid grid-3">
-          <div class="track-line"><span class="dot"></span><div><b>Applicant:</b><br/>${c.applicantName}</div></div>
-          <div class="track-line"><span class="dot"></span><div><b>Date:</b><br/>${c.date}</div></div>
-          <div class="track-line"><span class="dot"></span><div><b>Reference #:</b><br/>${c.refNo}</div></div>
-        </div>
-        <div class="grid grid-3" style="margin-top:8px">
-          <div class="track-line"><span class="dot"></span><div><b>Document:</b><br/>${c.docType}</div></div>
-          <div class="track-line"><span class="dot"></span><div><b>Quantity:</b><br/>${c.qty}</div></div>
-          <div class="track-line"><span class="dot"></span><div><b>Service:</b><br/>${c.service}</div></div>
-        </div>
-        <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Expected Delivery:</b><br/>${c.expectedDelivery}</div></div>
-        <div class="track-line" style="margin-top:8px"><span class="dot"></span><div><b>Current Status:</b><br/><span class="pill">${c.status}</span></div></div>
-      `;
-    }
-  </script>
-</div>
-
 {% include 'sections/footer.html' %}
+</body>

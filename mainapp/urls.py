@@ -13,8 +13,21 @@ urlpatterns = [
     path('search/', views.search_visas, name='search_visas'),
 
     path('about', views.about, name='about'),
-    path('allcases', views.allcases, name='allcases'),
-    path('track', views.tracking, name='tracking'),
+    
+    
+    path('allcases', views.case_management, name='allcases'),
+    path('api/cases/create/', views.create_case, name='create_case'),
+    path('api/cases/<str:ref_no>/status/', views.update_case_status, name='update_case_status'),
+
+    path("cases/<str:ref_no>/edit/", views.edit_case, name="edit_case"),
+    path("cases/<str:ref_no>/delete/", views.delete_case, name="delete_case"),
+    path('api/cases/search/', views.search_cases, name='search_cases'),
+    
+    path("tracking/", views.tracking, name="tracking"),
+    path("track/<str:ref_no>/", views.track_case, name="track_case"),
+    path("invoice/<str:ref_no>/", views.invoice_view, name="invoice_view"),
+    
+
     path('contact', views.contact, name='contact'),
     path('countries', views.countries, name='countries'),
     path('service', views.service, name='service'),

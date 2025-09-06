@@ -1,6 +1,45 @@
 from django import forms
 from .models import *
 
+import random
+import string
+
+class CaseForm(forms.ModelForm):
+    class Meta:
+        model = Case
+        # Exclude auto-generated fields
+        exclude = ['balance', 'expected_delivery', 'date_created', 'date_modified', 'id']
+        widgets = {
+            'applicant_address': forms.Textarea(attrs={'rows': 3}),
+            'ref_no': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make status not required since it's auto-set
+        self.fields['status'].required = False
+        
+        # Set initial reference number if creating new
+        if not self.instance.pk:
+            self.initial['ref_no'] = self.generate_reference_number()
+    
+    def generate_reference_number(self):
+        # Generate a 10-digit unique reference number
+        from django.db.models import Q
+        
+        while True:
+            ref_no = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            if not Case.objects.filter(ref_no=ref_no).exists():
+                return ref_no
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        # Remove status from cleaned_data if it's empty since it will be auto-set
+        if not cleaned_data.get('status'):
+            if 'status' in cleaned_data:
+                del cleaned_data['status']
+        return cleaned_data
+
 
 class ContactForm(forms.Form):
     PROJECT_CHOICES = [

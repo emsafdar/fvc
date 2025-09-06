@@ -106,8 +106,15 @@
 
                         <a href="{% url 'mainapp:all_visas' %}"
                            class="nav-item nav-link {% if request.path == '/all_visas' %}active{% endif %}">Visas</a>
-
-                        <a href="{% url 'mainapp:tracking' %}"
+                        
+                        {% if user.is_staff %}
+                        <a href="{% url 'mainapp:allcases' %}"
+                            class="nav-item nav-link {% if request.path == '/allcases' %}active{% endif %}">
+                            All Cases
+                        </a>
+                        {% endif %}
+                        
+                           <a href="{% url 'mainapp:tracking' %}"
                            class="nav-item nav-link {% if request.path == '/tracking' %}active{% endif %}">Tracking</a>
 
 

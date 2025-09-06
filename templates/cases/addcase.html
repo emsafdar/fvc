@@ -1,0 +1,342 @@
+{% load static %}
+{% include 'sections/navigation.html' %}
+{% include 'sections/modalsearch.html' %}
+
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb">
+    <div class="container text-center py-5" style="max-width: 900px;">
+        <h3 class="text-white display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">Create New Case</h3>
+        <ol class="breadcrumb justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+            <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'mainapp:allcases' %}" class="text-white">All Cases</a></li>
+            <li class="breadcrumb-item active text-secondary">New Case</li>
+        </ol>    
+    </div>
+</div>
+<!-- Header End -->
+
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create New Case</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="caseForm" method="POST" action="{% url 'mainapp:create_case' %}">
+                            {% csrf_token %}
+                            
+                            <div id="formAlert" class="alert alert-danger d-none">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <span id="errorMessage"></span>
+                                <ul id="errorList" class="mb-0 mt-2"></ul>
+                            </div>
+                            
+                            <div id="successAlert" class="alert alert-success d-none">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Case created successfully! Reference number: <strong id="successRefNo"></strong>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Applicant Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="applicant_name" required>
+                                    <div class="invalid-feedback" data-field="applicant_name"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="contact_number" required>
+                                    <div class="invalid-feedback" data-field="contact_number"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Reference Number</label>
+                                    <input type="text" class="form-control" id="ref_no" name="ref_no" value="{{ ref_no }}" readonly>
+                                    <small class="text-muted">Auto-generated reference number</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Document Type <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="document_type" required>
+                                    <div class="invalid-feedback" data-field="document_type"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" name="quantity" min="1" value="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Service <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="service" required>
+                                        <option value="">Select Service</option>
+                                        {% for value, label in service_choices %}
+                                            <option value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback" data-field="service"></div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Rate Fixed with Client</label>
+                                    <input type="number" class="form-control" name="rate" min="0" step="0.01" value="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Advance</label>
+                                    <input type="number" class="form-control" name="advance" min="0" step="0.01" value="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Balance</label>
+                                    <input type="text" class="form-control" id="balance" value="0.00" readonly>
+                                    <small class="text-muted">Auto-calculated</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Receiving Method <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="receiving_method" required>
+                                        <option value="">Select Receiving Method</option>
+                                        {% for value, label in receiving_method_choices %}
+                                            <option value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback" data-field="receiving_method"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Receiver Name</label>
+                                    <input type="text" class="form-control" name="receiver_name" placeholder="Person who handed over docs">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="status" required>
+                                        <option value="">Select Status</option>
+                                        {% for value, label in status_choices %}
+                                            <option value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback" data-field="status"></div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Applicant Address</label>
+                                    <textarea class="form-control" name="applicant_address" rows="3" placeholder="Street, City"></textarea>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Reference Person / Agent</label>
+                                    <input type="text" class="form-control" name="agent" placeholder="Agent / Ref Name">
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Payment Received By</label>
+                                    <input type="text" class="form-control" name="payment_received_by" placeholder="Cashier name or method">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-control" name="date_created" value="{{ current_date }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'mainapp:allcases' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i> Back to Cases
+                                </a>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="fas fa-save me-1"></i> Save Case
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'sections/footer.html' %}
+
+<style>
+    .bg-breadcrumb {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "img/breadcrumb-bg.jpg" %}') center center/cover no-repeat;
+    }
+    .card {
+        border-radius: 10px;
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .field-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('caseForm');
+        const formAlert = document.getElementById('formAlert');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorList = document.getElementById('errorList');
+        const successAlert = document.getElementById('successAlert');
+        const successRefNo = document.getElementById('successRefNo');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        const rateInput = document.querySelector('input[name="rate"]');
+        const advanceInput = document.querySelector('input[name="advance"]');
+        const balanceField = document.getElementById('balance');
+        
+        // Calculate balance
+        function calculateBalance() {
+            const rate = parseFloat(rateInput.value) || 0;
+            const advance = parseFloat(advanceInput.value) || 0;
+            balanceField.value = (rate - advance).toFixed(2);
+        }
+        
+        rateInput.addEventListener('input', calculateBalance);
+        advanceInput.addEventListener('input', calculateBalance);
+        
+        // Clear validation errors
+        function clearValidationErrors() {
+            // Remove is-invalid class from all fields
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+            
+            // Clear all error messages
+            document.querySelectorAll('.invalid-feedback').forEach(el => {
+                el.textContent = '';
+            });
+            
+            // Clear error list
+            errorList.innerHTML = '';
+            formAlert.classList.add('d-none');
+        }
+        
+        // Show validation errors
+        function showValidationErrors(errors) {
+            clearValidationErrors();
+            
+            let errorCount = 0;
+            let errorHtml = '';
+            
+            // Process each field error
+            for (const field in errors) {
+                const fieldErrors = errors[field];
+                const fieldElement = document.querySelector(`[name="${field}"]`);
+                const feedbackElement = document.querySelector(`.invalid-feedback[data-field="${field}"]`);
+                
+                if (fieldElement && feedbackElement) {
+                    fieldElement.classList.add('is-invalid');
+                    feedbackElement.textContent = fieldErrors.join(', ');
+                    errorCount++;
+                    
+                    // Add to error list
+                    fieldErrors.forEach(error => {
+                        errorHtml += `<li>${field.replace(/_/g, ' ').toUpperCase()}: ${error}</li>`;
+                    });
+                }
+            }
+            
+            // Show error alert if there are errors
+            if (errorCount > 0) {
+                errorMessage.textContent = `Please correct the ${errorCount} error(s) below:`;
+                errorList.innerHTML = errorHtml;
+                formAlert.classList.remove('d-none');
+                
+                // Scroll to first error field
+                const firstErrorField = document.querySelector('.is-invalid');
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.focus();
+                }
+            }
+        }
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Hide previous alerts
+            clearValidationErrors();
+            successAlert.classList.add('d-none');
+            
+            // Disable submit button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving...';
+            
+            // Create FormData object
+            const formData = new FormData(form);
+            
+            // Debug: Log form data
+            console.log("Form data being submitted:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
+            // Send AJAX request
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+            })
+            .then(response => {
+                console.log("Response status:", response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response data:", data);
+                if (data.success) {
+                    // Show success message
+                    successRefNo.textContent = data.ref_no;
+                    successAlert.classList.remove('d-none');
+                    
+                    // Reset form
+                    form.reset();
+                    document.getElementById('ref_no').value = data.ref_no;
+                    calculateBalance();
+                    
+                    // Scroll to top to show success message
+                    window.open(`/invoice/${data.ref_no}/`, "_blank");
+                } else {
+                    // Show error message
+                    if (data.errors) {
+                        console.log("Form errors:", data.errors);
+                        showValidationErrors(data.errors);
+                    } else {
+                        errorMessage.textContent = data.error || 'An error occurred while saving the case.';
+                        formAlert.classList.remove('d-none');
+                        formAlert.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                errorMessage.textContent = 'Network error. Please try again.';
+                formAlert.classList.remove('d-none');
+                formAlert.scrollIntoView({ behavior: 'smooth' });
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save me-1"></i> Save Case';
+            });
+        });
+        
+        // Initialize balance calculation
+        calculateBalance();
+    });
+</script>

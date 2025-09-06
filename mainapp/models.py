@@ -3,6 +3,9 @@ from cloudinary.models import CloudinaryField
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator
+import uuid
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -163,8 +166,80 @@ class Review(models.Model):
         ordering = ('-created',)
 
 
-
-
+class Case(models.Model):
+    STATUS_CHOICES = [
+        ('Courier Received', 'Courier Received'),
+        ('Physically Received', 'Physically Received'),
+        ('Submitted for processing', 'Submitted for processing'),
+        ('Additional Details Required', 'Additional Details Required'),
+        ('Processing Completed', 'Processing Completed'),
+        ('Payment Pending', 'Payment Pending'),
+        ('Ready for dispatch', 'Ready for dispatch'),
+        ('Courier Dispatched', 'Courier Dispatched'),
+        ('Physically Received by applicant', 'Physically Received by applicant'),
+    ]
+    
+    SERVICE_CHOICES = [
+        ('Normal', 'Normal (2–3 weeks)'),
+        ('Urgent', 'Urgent (1–3 working days)'),
+    ]
+    
+    RECEIVING_METHOD_CHOICES = [
+        ('Courier Received', 'Courier Received'),
+        ('Physically Received', 'Physically Received'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ref_no = models.CharField(max_length=20, unique=True, db_index=True)
+    applicant_name = models.CharField(max_length=255, db_index=True)
+    contact_number = models.CharField(max_length=20, db_index=True)
+    document_type = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    service = models.CharField(max_length=10, choices=SERVICE_CHOICES, default='Normal')
+    rate = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    advance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    receiving_method = models.CharField(max_length=20, choices=RECEIVING_METHOD_CHOICES)
+    receiver_name = models.CharField(max_length=255, blank=True)
+    applicant_address = models.TextField(blank=True)
+    agent = models.CharField(max_length=255, blank=True)
+    payment_received_by = models.CharField(max_length=255, blank=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
+    expected_delivery = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['ref_no', 'applicant_name']),
+            models.Index(fields=['status', 'date_created']),
+        ]
+        ordering = ['-date_created']
+    
+    def save(self, *args, **kwargs):
+        # Auto-calculate balance
+        self.balance = self.rate - self.advance
+        
+        # Auto-set expected delivery based on service
+        if self.service == 'Urgent':
+            self.expected_delivery = '1–3 working days'
+        else:
+            self.expected_delivery = '2–3 weeks'
+            
+        # Auto-set initial status if not set
+        if not self.status:
+            if self.receiving_method == 'Courier Received':
+                self.status = 'Courier Received'
+            else:
+                if self.receiver_name:
+                    self.status = f'Physically Received by {self.receiver_name}'
+                else:
+                    self.status = 'Physically Received'
+                    
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"{self.ref_no} - {self.applicant_name}"
 
 
         
