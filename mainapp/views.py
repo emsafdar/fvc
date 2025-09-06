@@ -16,6 +16,7 @@ import logging
 from django.template.loader import render_to_string
 import io
 import qrcode
+import base64
 from django.views.decorators.cache import cache_page
 
 
@@ -276,7 +277,7 @@ def create_case(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
-@staff_member_required
+@staff_member_required 
 def invoice_view(request, ref_no):
     """Render invoice page with QR code."""
     case = get_object_or_404(Case, ref_no=ref_no)
@@ -286,11 +287,13 @@ def invoice_view(request, ref_no):
     qr = qrcode.make(track_url)
     qr_io = io.BytesIO()
     qr.save(qr_io, format="PNG")
-    qr_data = qr_io.getvalue()
+
+    # ✅ Convert QR code to base64 string
+    qr_base64 = base64.b64encode(qr_io.getvalue()).decode("utf-8")
 
     return render(request, "cases/invoice.html", {
         "case": case,
-        "qr_code": qr_data.hex()
+        "qr_code": qr_base64  # pass base64 instead of hex
     })
 
 
