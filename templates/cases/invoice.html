@@ -182,7 +182,6 @@
     <table>
         <tr><th>Document Type</th><td>{{ case.document_type }}</td></tr>
         <tr><th>Quantity</th><td>{{ case.quantity }}</td></tr>
-        <tr><th>Receiving Method</th><td>{{ case.get_receiving_method_display }}{% if case.receiver_name %} by "{{ case.receiver_name }}"{% endif %}</td></tr>
     </table>
 
     <!-- Service Details -->
