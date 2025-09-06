@@ -116,15 +116,16 @@
                                             <span class="badge bg-secondary">{{ case.get_status_display }}</span>
 
                                             <!-- Status Change Dropdown -->
-                                            <form method="POST" action="{% url 'mainapp:update_status' case.ref_no %}" class="d-inline">
+                                            <form method="post" action="{% url 'mainapp:update_status' case.ref_no %}">
                                                 {% csrf_token %}
-                                                <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                                                    {% for value, label in status_choices %}
-                                                        <option value="{{ value }}" {% if case.status == value %}selected{% endif %}>
-                                                            {{ label }}
+                                                <select name="status">
+                                                    {% for key, value in case.STATUS_CHOICES %}
+                                                        <option value="{{ key }}" {% if case.status == key %}selected{% endif %}>
+                                                            {{ value }}
                                                         </option>
                                                     {% endfor %}
                                                 </select>
+                                                <button type="submit">Update</button>
                                             </form>
                                         </td>
                                         <td class="px-3">{{ case.agent }}</td>

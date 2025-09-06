@@ -71,10 +71,10 @@
 
           <!-- Timeline of Status Changes -->
           <div class="timeline">
-            {% for history in case.history.all %}
+            {% for h in history %}
               <div class="timeline-item">
-                <h4>Status: {{ history.get_status_display }}</h4>
-                <span>{{ history.timestamp|date:"M d, Y H:i" }}</span>
+                <h4>Status: {{ h.get_new_status_display }}</h4>
+                <span>{{ h.changed_at|date:"M d, Y H:i" }}</span>
               </div>
             {% empty %}
               <p class="muted">No status updates yet.</p>

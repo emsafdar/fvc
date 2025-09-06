@@ -312,22 +312,34 @@ def invoice_view(request, ref_no):
     })
 
 
-
+@staff_member_required
 @csrf_exempt
 def update_status(request, ref_no):
-    if request.method == 'POST':
-        case = get_object_or_404(Case, ref_no=ref_no)
-        data = json.loads(request.body)
-        new_status = data.get('status')
-        
-        if new_status:
+    if request.method == "POST":
+        try:
+            new_status = request.POST.get("status")
+            case = get_object_or_404(Case, ref_no=ref_no)
+
+            old_status = case.status  # keep the previous status
+
+            # Update case
             case.status = new_status
             case.save()
-            # Invalidate cache
-            cache.delete('all_cases')
-            return JsonResponse({'success': True})
-    
-    return JsonResponse({'success': False})
+
+            # Save to CaseStatusHistory
+            CaseStatusHistory.objects.create(
+                case=case,
+                old_status=old_status,
+                new_status=new_status
+            )
+
+            messages.success(request, f"Status updated to {new_status}.")
+            return redirect("mainapp:allcases")
+
+        except Exception as e:
+            logger.error(f"Error updating status: {e}")
+            messages.error(request, "Failed to update status.")
+            return redirect("mainapp:allcases")
 
 
 @csrf_exempt

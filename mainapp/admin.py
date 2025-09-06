@@ -109,6 +109,11 @@ class CaseAdmin(admin.ModelAdmin):
         }),
     )
 
+@admin.register(CaseStatusHistory)
+class CaseStatusHistoryAdmin(admin.ModelAdmin):
+    list_display = ('case', 'changed_at')
+    list_per_page = 20
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
