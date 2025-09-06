@@ -1,59 +1,215 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice - {{ case.ref_no }}</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .invoice { max-width: 700px; margin: auto; border: 1px solid #ddd; padding: 20px; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .qr { text-align: right; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background: #f5f5f5; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+        .invoice {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e4e8;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1a73e8;
+            margin-bottom: 30px;
+        }
+        .company-info h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a73e8;
+            white-space: nowrap;
+        }
+        .company-info p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .invoice-meta {
+            text-align: right;
+        }
+        .invoice-meta h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        .invoice-meta p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #666;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a73e8;
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e4e8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e4e8;
+            text-align: left;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            width: 30%;
+        }
+        td {
+            color: #444;
+        }
+        td.amount {
+            text-align: right;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+        .payment-qr-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .payment-table {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            width: 45%;
+            font-size: 13px;
+        }
+        .payment-table th, .payment-table td {
+            padding: 8px 10px;
+        }
+        .qr-code {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .qr-code img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #e0e4e8;
+            border-radius: 6px;
+        }
+        .qr-code p {
+            font-size: 12px;
+            color: #777;
+            margin: 5px 0 0;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #777;
+            border-top: 1px solid #e0e4e8;
+            padding-top: 20px;
+        }
+        .footer p {
+            margin: 0;
+            line-height: 1.6;
+        }
+        @media print {
+            body {
+                padding: 0;
+                background: #fff;
+            }
+            .invoice {
+                box-shadow: none;
+                border: none;
+            }
+        }
     </style>
 </head>
 <body onload="window.print()">
-
 <div class="invoice">
+    <!-- Header -->
     <div class="header">
-        <h2>Invoice</h2>
-        <p>Reference #: <strong>{{ case.ref_no }}</strong></p>
+        <div class="company-info">
+            <h1>Friends Visa & Immigration Consultants Pvt. Ltd</h1>
+            <p>Office 5A, Ahmed Center, Chatha Bakhtawar, Park Road, Islamabad</p>
+            <p>Contact: 0301-7978598 | 0303-8288152 | 03021108001</p>
+            <p>Website: fviconsultants.com  |  Email: info@friendsvisa.com</p>
+            
+        </div>
+        <div class="invoice-meta">
+            <h2>INVOICE</h2>
+            <p>Reference #: {{ case.ref_no }}</p>
+            <p>Date: {{ case.date_created|date:"d M Y" }}</p>
+            <p>Time: {{ case.date_created|date:"h:i A" }}</p>
+        </div>
     </div>
 
-    <div class="qr">
-        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="width:150px; height:150px;">
-        <p style="font-size: 12px;">Scan to Track</p>
-    </div>
-
+    <!-- Applicant Information -->
+    <div class="section-title">Applicant Information</div>
     <table>
-        <tr>
-            <th>Applicant</th>
-            <td>{{ case.applicant_name }}</td>
-        </tr>
-        <tr>
-            <th>Contact</th>
-            <td>{{ case.contact_number }}</td>
-        </tr>
-        <tr>
-            <th>Document</th>
-            <td>{{ case.document_type }}</td>
-        </tr>
-        <tr>
-            <th>Service</th>
-            <td>{{ case.service }}</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td>{{ case.status }}</td>
-        </tr>
-        <tr>
-            <th>Date</th>
-            <td>{{ case.date_created }}</td>
-        </tr>
+        <tr><th>Name</th><td>{{ case.applicant_name }}</td></tr>
+        <tr><th>Contact</th><td>{{ case.contact_number }}</td></tr>
+        <tr><th>Address</th><td>{{ case.applicant_address|default:"N/A" }}</td></tr>
     </table>
-</div>
 
+    <!-- Document Details -->
+    <div class="section-title">Document Details</div>
+    <table>
+        <tr><th>Document Type</th><td>{{ case.document_type }}</td></tr>
+        <tr><th>Quantity</th><td>{{ case.quantity }}</td></tr>
+        <tr><th>Receiving Method</th><td>{{ case.get_receiving_method_display }}{% if case.receiver_name %} by "{{ case.receiver_name }}"{% endif %}</td></tr>
+    </table>
+
+    <!-- Service Details -->
+    <div class="section-title">Service Details</div>
+    <table>
+        <tr><th>Service</th><td>{{ case.get_service_display }}</td></tr>
+    </table>
+
+    <!-- Payment and QR Code -->
+    <div class="section-title">Payment & Tracking</div>
+    <div class="payment-qr-container">
+        <table class="payment-table">
+            <tr><th>Rate</th><td class="amount">{{ case.rate|floatformat:2 }}</td></tr>
+            <tr><th>Advance</th><td class="amount">{{ case.advance|floatformat:2 }}</td></tr>
+            <tr><th>Balance</th><td class="amount">{{ case.balance|floatformat:2 }}</td></tr>
+        </table>
+        <div class="qr-code">
+            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+            <p>Scan to Track</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for choosing Friends Visa & Immigration Consultants Pvt. Ltd.</p>
+        <p>For real-time updates, scan the QR code or visit our website.</p>
+    </div>
+</div>
 </body>
 </html>
