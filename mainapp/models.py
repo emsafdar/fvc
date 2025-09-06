@@ -11,8 +11,7 @@ import uuid
 
 class Case(models.Model):
     STATUS_CHOICES = [
-        ('Courier Received', 'Courier Received'),
-        ('Physically Received', 'Physically Received'),
+        ('Received', 'Received'),
         ('Submitted for processing', 'Submitted for processing'),
         ('Additional Details Required', 'Additional Details Required'),
         ('Processing Completed', 'Processing Completed'),
