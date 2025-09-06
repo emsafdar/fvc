@@ -7,39 +7,244 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Track Your Application</title>
   <style>
-    #track-widget { font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif; background:#f5f7fb; color:#111827; padding:20px 0 }
-    #track-widget .container{max-width:750px;margin:0 auto;padding:0 14px}
-    #track-widget .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(20,35,90,.05)}
-    #track-widget label{font-size:12px;font-weight:700;color:#374151}
-    #track-widget input{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px}
-    #track-widget input:focus{border-color:#dbb509;outline:none}
-    #track-widget .btn{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;background:#a68107;color:#fff}
-    #track-widget .btn:hover{background:#000000}
-    #track-widget .grid{display:grid;gap:12px}
-    #track-widget .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    @media (max-width:800px){#track-widget .grid-3{grid-template-columns:1fr}}
-    #track-widget .track-line{display:flex;gap:10px;align-items:center;margin:6px 0}
-    #track-widget .dot{width:10px;height:10px;border-radius:50%;background:#000000}
-    #track-widget .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#e5f3ff;color:#000000}
-    #track-widget .muted{color:#6b7280;font-size:12px}
-    #track-widget .error{color:#dc2626;font-size:14px;margin-top:8px}
-    .bg-breadcrumb {background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "img/bg-hero.jpg" %}') center center no-repeat; background-size: cover;}
-    .timeline {margin-top:20px;padding-left:20px;border-left:3px solid #ddd;}
-    .timeline-item {margin-bottom:15px;position:relative;}
-    .timeline-item::before {content:"";position:absolute;left:-10px;top:5px;width:12px;height:12px;background:#000;border-radius:50%;}
-    .timeline-item h4 {margin:0;font-size:14px;}
-    .timeline-item span {font-size:12px;color:#666;}
+    body {
+      font-family: 'Inter', system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2a44;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .bg-breadcrumb {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "img/bg-hero.jpg" %}') center center no-repeat;
+      background-size: cover;
+      padding: 60px 0;
+    }
+    .breadcrumb-container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .breadcrumb-container h3 {
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+    .breadcrumb {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .breadcrumb-item {
+      color: #fff;
+      font-size: 14px;
+      margin: 0 8px;
+    }
+    .breadcrumb-item a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+    .breadcrumb-item a:hover {
+      text-decoration: underline;
+    }
+    .breadcrumb-item.active {
+      color: #a68107;
+    }
+    #track-widget {
+      padding: 40px 0;
+      background: #f5f7fb;
+    }
+    #track-widget .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    #track-widget .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(20, 35, 90, 0.1);
+      margin-bottom: 24px;
+    }
+    #track-widget h2, #track-widget h3 {
+      color: #042a5c;
+      font-weight: 600;
+      margin: 0 0 16px;
+    }
+    #track-widget label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      display: block;
+      margin-bottom: 6px;
+    }
+    #track-widget input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    #track-widget input:focus {
+      border-color: #a68107;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(166, 129, 7, 0.1);
+    }
+    #track-widget .btn {
+      background: #a68107;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #track-widget .btn:hover {
+      background: #8b6c06;
+    }
+    #track-widget .grid {
+      display: grid;
+      gap: 16px;
+    }
+    #track-widget .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 800px) {
+      #track-widget .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+    #track-widget .track-line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    #track-widget .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #042a5c;
+      flex-shrink: 0;
+    }
+    #track-widget .pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #e5f3ff;
+      color: #042a5c;
+      font-weight: 500;
+    }
+    #track-widget .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+    #track-widget .error {
+      color: #dc2626;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .timeline {
+      margin-top: 24px;
+      padding-left: 24px;
+      border-left: 3px solid #e5e7eb;
+    }
+    .timeline-item {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      top: 5px;
+      width: 14px;
+      height: 14px;
+      background: #042a5c;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    }
+    .timeline-item h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2a44;
+    }
+    .timeline-item span {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .shareable-details {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .shareable-details h4 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #042a5c;
+    }
+    .shareable-details p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #374151;
+    }
+    .share-btn {
+      background: #042a5c;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .share-btn:hover {
+      background: #042a5c;
+    }
+    .share-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: #fff;
+    }
+    @media print {
+      .bg-breadcrumb, .btn, .share-btn {
+        display: none;
+      }
+      #track-widget {
+        background: #fff;
+        padding: 0;
+      }
+      .card {
+        box-shadow: none;
+        border: none;
+      }
+    }
   </style>
 </head>
 <body>
-
   <!-- Header Start -->
   <div class="bg-breadcrumb">
-    <div class="container text-center py-5" style="max-width: 900px;">
-      <h3 class="text-white display-3 mb-4" style="font-size: 2.5rem;">Track your Application</h3>
-      <ol class="breadcrumb justify-content-center text-white mb-0" style="display:flex;list-style:none;padding:0;">
-        <li class="breadcrumb-item"><a href="/" class="text-white">Home</a></li>
-        <li class="breadcrumb-item active text-secondary">Tracking</li>
+    <div class="breadcrumb-container">
+      <h3>Track Your Application</h3>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">Tracking</li>
       </ol>
     </div>
   </div>
@@ -48,7 +253,7 @@
   <div id="track-widget">
     <div class="container">
       <div class="card">
-        <h2 style="margin:0 0 8px">Track Application</h2>
+        <h2>Track Application</h2>
         <form method="get" action="{% url 'mainapp:track_case' ref_no='DUMMY' %}" 
               onsubmit="this.action=this.action.replace('DUMMY', document.getElementById('trackRef').value)">
           <div class="grid grid-3">
@@ -66,8 +271,31 @@
       {% if searched %}
         <div class="card" style="margin-top:20px;">
           <h3>Tracking Result</h3>
-          <div class="track-line"><b>Reference:</b> {{ case.ref_no }}</div>
-          <div class="track-line"><b>Applicant:</b> {{ case.applicant_name }}</div>
+          <div class="track-line"><span class="dot"></span><b>Reference:</b> {{ case.ref_no }}</div>
+          <div class="track-line"><span class="dot"></span><b>Applicant:</b> {{ case.applicant_name }}<br>
+            {% if case.applicant_address %}
+              {{ case.applicant_address }}
+            {% endif %}
+          </div>
+
+          <!-- Shareable Details -->
+          <div class="shareable-details">
+            <h4>Application Details</h4>
+            <p><b>Document Type:</b> {{ case.document_type }}</p>
+            <p><b>Quantity:</b> {{ case.quantity }}</p>
+            <p><b>Service:</b> {{ case.get_service_display }}</p>
+
+            {% if case.payment_received_by %}
+              <p><b>Payment Received By:</b> {{ case.payment_received_by }}</p>
+            {% endif %}
+            <p><b>Date Created:</b> {{ case.date_created|date:"M d, Y H:i" }}</p>
+            <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!')">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+              </svg>
+              Share Application Status
+            </button>
+          </div>
 
           <!-- Timeline of Status Changes -->
           <div class="timeline">
