@@ -112,14 +112,20 @@
                                         <td class="px-3">{{ case.document_type }}</td>
                                         <td class="px-3">{{ case.get_service_display }}</td>
                                         <td class="px-3">
-                                            <span class="badge 
-                                                {% if case.status == 'completed' %}bg-success
-                                                {% elif case.status == 'in_progress' %}bg-primary
-                                                {% elif case.status == 'pending' %}bg-warning
-                                                {% elif case.status == 'rejected' %}bg-danger
-                                                {% else %}bg-secondary{% endif %}">
-                                                {{ case.get_status_display }}
-                                            </span>
+                                            <!-- Current Status Badge -->
+                                            <span class="badge bg-secondary">{{ case.get_status_display }}</span>
+
+                                            <!-- Status Change Dropdown -->
+                                            <form method="POST" action="{% url 'mainapp:update_status' case.ref_no %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                                    {% for value, label in status_choices %}
+                                                        <option value="{{ value }}" {% if case.status == value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
                                         </td>
                                         <td class="px-3">{{ case.agent }}</td>
                                         <td class="px-3">{{ case.get_receiving_method_display }}</td>
@@ -139,7 +145,6 @@
                                                 </a>
                                             </div>
                                         </td>
-
                                     </tr>
                                     {% empty %}
                                     <tr>

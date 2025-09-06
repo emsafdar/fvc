@@ -208,6 +208,21 @@ def case_management(request):
     
     return render(request, 'cases/allcases.html', context)
 
+
+def tracking(request):
+    return render(request, "tracking.html")
+
+
+def track_case(request, ref_no):
+    case = get_object_or_404(Case, ref_no=ref_no)
+    # fetch history of this case
+    history = case.status_history.order_by("changed_at")  
+    return render(request, "tracking.html", {
+        "case": case,
+        "searched": True,
+        "history": history
+    })
+
 # Set up logging
 logger = logging.getLogger(__name__)
 
@@ -299,7 +314,7 @@ def invoice_view(request, ref_no):
 
 
 @csrf_exempt
-def update_case_status(request, ref_no):
+def update_status(request, ref_no):
     if request.method == 'POST':
         case = get_object_or_404(Case, ref_no=ref_no)
         data = json.loads(request.body)
@@ -392,14 +407,6 @@ def search_cases(request):
         return JsonResponse({'cases': cases_data})
     
     return JsonResponse({'cases': []})
-
-
-def tracking(request):
-    return render(request, "tracking.html")
-
-def track_case(request, ref_no):
-    case = get_object_or_404(Case, ref_no=ref_no)   # change "ref_no" to your model’s field name
-    return render(request, "tracking.html", {"case": case, "searched": True})
 
 
 def service(request):

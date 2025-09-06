@@ -242,6 +242,18 @@ class Case(models.Model):
         return f"{self.ref_no} - {self.applicant_name}"
 
 
+class CaseStatusHistory(models.Model):
+    """Track status changes for each case with timestamp."""
+    case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name="status_history")
+    old_status = models.CharField(max_length=50, choices=Case.STATUS_CHOICES, blank=True, null=True)
+    new_status = models.CharField(max_length=50, choices=Case.STATUS_CHOICES)
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.case.ref_no} - {self.new_status} at {self.changed_at:%Y-%m-%d %H:%M}"
+
+
+
         
 
 class SiteSettings(models.Model):

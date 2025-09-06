@@ -24,6 +24,11 @@
     #track-widget .muted{color:#6b7280;font-size:12px}
     #track-widget .error{color:#dc2626;font-size:14px;margin-top:8px}
     .bg-breadcrumb {background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "img/bg-hero.jpg" %}') center center no-repeat; background-size: cover;}
+    .timeline {margin-top:20px;padding-left:20px;border-left:3px solid #ddd;}
+    .timeline-item {margin-bottom:15px;position:relative;}
+    .timeline-item::before {content:"";position:absolute;left:-10px;top:5px;width:12px;height:12px;background:#000;border-radius:50%;}
+    .timeline-item h4 {margin:0;font-size:14px;}
+    .timeline-item span {font-size:12px;color:#666;}
   </style>
 </head>
 <body>
@@ -63,8 +68,18 @@
           <h3>Tracking Result</h3>
           <div class="track-line"><b>Reference:</b> {{ case.ref_no }}</div>
           <div class="track-line"><b>Applicant:</b> {{ case.applicant_name }}</div>
-          <div class="track-line"><b>Status:</b> {{ case.status }}</div>
-          <div class="track-line"><b>Date:</b> {{ case.date }}</div>
+
+          <!-- Timeline of Status Changes -->
+          <div class="timeline">
+            {% for history in case.history.all %}
+              <div class="timeline-item">
+                <h4>Status: {{ history.get_status_display }}</h4>
+                <span>{{ history.timestamp|date:"M d, Y H:i" }}</span>
+              </div>
+            {% empty %}
+              <p class="muted">No status updates yet.</p>
+            {% endfor %}
+          </div>
         </div>
       {% endif %}
     </div>

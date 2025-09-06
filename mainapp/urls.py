@@ -17,7 +17,7 @@ urlpatterns = [
     
     path('allcases', views.case_management, name='allcases'),
     path('api/cases/create/', views.create_case, name='create_case'),
-    path('api/cases/<str:ref_no>/status/', views.update_case_status, name='update_case_status'),
+    path("cases/<str:ref_no>/update-status/", views.update_status, name="update_status"),
 
     path("cases/<str:ref_no>/edit/", views.edit_case, name="edit_case"),
     path("cases/<str:ref_no>/delete/", views.delete_case, name="delete_case"),
