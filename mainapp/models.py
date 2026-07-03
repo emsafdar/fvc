@@ -352,7 +352,7 @@ class SiteSettings(models.Model):
     text_color = models.CharField(max_length=7, default="#000000")  # Example: Black
     
     def __str__(self):
-        return self.site_title
+        return self.site_title or "Site Settings"
     
 
 class NewsletterSubscription(models.Model):
