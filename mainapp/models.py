@@ -299,7 +299,7 @@ class Review(models.Model):
         
 
 class SiteSettings(models.Model):
-    site_title = models.CharField(max_length=200, help_text="The title of your site")
+    site_title = models.CharField(max_length=200, help_text="The title of your site", null=True, blank=True)
     logo =  CloudinaryField('image', folder='about/', help_text="Upload the site logo", null=True, blank=True)
     metakeywords = models.TextField(default='visa', null=True, blank=True)
     metadescription = models.TextField(default='visa consultant', null=True, blank=True)
