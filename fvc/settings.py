@@ -29,7 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# Provide a safe default to avoid import-time errors in environments
+# where env vars aren't set (CI, quick deploys). Replace in production.
+SECRET_KEY = config('SECRET_KEY', default='unsafe-default-secret-for-deploy')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -142,13 +144,23 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Cloudinary settings using CLOUDINARY_URL
-CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': config('CLOUDINARY_URL')
-}
-
-# Ensure media files are stored in Cloudinary
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Cloudinary settings using CLOUDINARY_URL (optional)
+# If CLOUDINARY_URL is not provided keep local media storage so
+# import-time errors don't crash the app on platforms where env
+# vars were not configured yet (eg. quick deployments).
+_cloudinary_url = config('CLOUDINARY_URL', default=None)
+if _cloudinary_url:
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': _cloudinary_url
+    }
+    # Ensure media files are stored in Cloudinary when configured
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # Configure cloudinary client below
+else:
+    # Fallback to local media files during deploys where Cloudinary is not set
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
 
 # Static files settings (unchanged)
 STATIC_URL = '/static/'
@@ -189,8 +201,9 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Configure Cloudinary
-cloudinary.config(cloudinary_url=config('CLOUDINARY_URL'))
+# Configure Cloudinary client only when URL is provided
+if _cloudinary_url:
+    cloudinary.config(cloudinary_url=_cloudinary_url)
 
 # Logging configuration for debugging
 LOGGING = {
