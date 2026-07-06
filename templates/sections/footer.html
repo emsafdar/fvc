@@ -101,7 +101,13 @@
             <div class="col-md-4 text-center text-md-start mb-md-0">
                 <span class="text-white">
                     <a href="#" class="text-white">
-                        <i class="fas fa-copyright text-light me-2"></i>{{site_title}}
+                        <i class="fas fa-copyright text-light me-2"></i>
+                        {% if logo %}
+                            <img src="{{ logo }}" alt="{{ site_title|default:'' }}" class="img-fluid" style="height:20px; display:inline-block; vertical-align:middle;">
+                            {% if site_title %} {{ site_title }}{% endif %}
+                        {% else %}
+                            {{ site_title }}
+                        {% endif %}
                     </a>, All rights reserved.
                 </span>
             </div>

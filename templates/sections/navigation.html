@@ -84,7 +84,14 @@
         <div class="container-fluid nav-bar p-0">
             <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
                 <a href="/" class="navbar-brand p-0">
-                    <h1 class="display-5 text-secondary m-0"><img src="{{logo}}" class="img-fluid" alt="">{{site_title}}</h1>
+                    <h1 class="display-5 text-secondary m-0">
+                        {% if logo %}
+                            <img src="{{ logo }}" class="img-fluid" alt="{{ site_title|default:'' }}">
+                            {% if site_title %} {{ site_title }}{% endif %}
+                        {% else %}
+                            {{ site_title }}
+                        {% endif %}
+                    </h1>
                     <!-- <img src="{% static 'img/logo.png' %}" alt="Logo"> -->
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
