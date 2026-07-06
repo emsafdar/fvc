@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-        <!--<title>{{site_title}}</title>-->
+        <title>{% if site_title %}{{ site_title }}{% else %}Default Site Title{% endif %}</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta name="description" content="{{ description }}">
         <meta name="keywords" content="{{ keywords }}">
