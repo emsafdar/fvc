@@ -1,5 +1,15 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "pip install -r requirements.txt",
-  "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
+  "version": 2,
+  "builds": [
+    {
+      "src": "fvc/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "fvc/wsgi.py"
+    }
+  ]
 }
