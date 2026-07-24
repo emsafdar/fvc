@@ -1,11 +1,12 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "builds": [
     {
       "src": "fvc/wsgi.py",
       "use": "@vercel/python"
     }
   ],
+  "installCommand": "pip install -r requirements.txt",
   "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput",
   "routes": [
     {
