@@ -34,8 +34,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='unsafe-default-secret-for-deploy')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Default to True for local development when DEBUG is not explicitly set.
-DEBUG = config('DEBUG', default=True, cast=bool)
+# Use environment variables to control DEBUG locally and in production.
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*', '127.0.0.1', '.vercel.app']
 

@@ -16,6 +16,8 @@ pip install -r requirements.txt && \
 python manage.py migrate --noinput && \
 python manage.py collectstatic --noinput
 
+If you add a `runtime.txt` file, Vercel will use the pinned Python version instead of automatically selecting Python 3.12.
+
 Notes:
 - Do NOT commit your .env with secrets. Use Vercel Environment Variables instead.
 - If you prefer to let the Vercel UI settings control builds, remove `builds` and `routes` from `vercel.json`. That is less reproducible but allows the Vercel UI Build Settings to take effect.
